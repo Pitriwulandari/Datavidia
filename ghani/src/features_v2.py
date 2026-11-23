@@ -1,7 +1,7 @@
 """Fitur v2: semua fitur baseline + fitur urutan scan (event pertama/terakhir, bigram transisi, perubahan hub, dst).
-Hasil di-cache ke cache/features_{split}.pkl supaya eksperimen tidak mengulang agregasi 9 menit.
+Hasil di-cache ke ghani/cache/features_{split}.pkl supaya eksperimen tidak mengulang agregasi 9 menit.
 
-Jalankan:  python src/features_v2.py train   |   python src/features_v2.py test
+Jalankan:  python ghani/src/features_v2.py train   |   python ghani/src/features_v2.py test
 """
 import os
 import sys
@@ -65,12 +65,13 @@ def seq_agg(path):
 
 if __name__ == "__main__":
     split = sys.argv[1]
-    os.makedirs("cache", exist_ok=True)
+    os.makedirs("ghani/cache", exist_ok=True)
     s = b.build(split)
     q = seq_agg(f"{b.ROOT}/{split}/scan_events.csv")
     b.log(f"{split}: seq feats {q.shape}")
     s = s.merge(q, left_on="shipment_id", right_index=True, how="left")
     s["seq_gap_up_ratio"] = s["seq_gap_after_up"] / (s["scan_gap_mean"] + 1e-6)
     s["scan_per_seg"] = s["scan_n"] / (s["seg_n"] + 1e-6)
-    s.to_pickle(f"cache/features_{split}.pkl")
+    s.to_pickle(f"ghani/cache/features_{split}.pkl")
     b.log(f"{split}: saved {s.shape}")
+

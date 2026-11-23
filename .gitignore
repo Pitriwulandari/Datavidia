@@ -102,4 +102,9 @@ desktop.ini
 $RECYCLE.BIN/
 
 # Cache fitur
-cache/
+ghani/cache/
+
+
+# Model per anggota (tambahkan manual dengan git add -f untuk file final)
+ghani/models/*
+!ghani/models/.gitkeep

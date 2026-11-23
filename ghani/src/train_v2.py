@@ -1,8 +1,8 @@
 """Training v2 dari cache fitur: LightGBM + tuning bobot kelas (Macro F1).
 
 Jalankan (setelah features_v2.py train & test selesai):
-  python src/train_v2.py                 # env: SUB_N (default seluruh data), LR, ROUNDS, TAG
-Output: models/lgbm_{TAG}.txt, models/meta_{TAG}.json, submissions/submission_{TAG}.csv, cache/proba_{TAG}_*.npy
+  python ghani/src/train_v2.py                 # env: SUB_N (default seluruh data), LR, ROUNDS, TAG
+Output: ghani/models/lgbm_{TAG}.txt, ghani/models/meta_{TAG}.json, submissions/submission_{TAG}_ghani.csv, ghani/cache/proba_{TAG}_*.npy
 """
 import json
 import os
@@ -15,13 +15,13 @@ from sklearn.model_selection import train_test_split
 
 import baseline_lgbm as b
 
-TAG = os.environ.get("TAG", "v2")
+TAG = os.environ.get("TAG", "v5")
 SUB_N = int(os.environ.get("SUB_N", 10**9))
 LR = float(os.environ.get("LR", 0.1))
 ROUNDS = int(os.environ.get("ROUNDS", 400))
 
-tr = pd.read_pickle("cache/features_train.pkl")
-te = pd.read_pickle("cache/features_test.pkl")
+tr = pd.read_pickle("ghani/cache/features_train.pkl")
+te = pd.read_pickle("ghani/cache/features_test.pkl")
 b.log(f"loaded {tr.shape} {te.shape}")
 
 classes = sorted(tr["status_penanganan"].unique())
@@ -88,11 +88,11 @@ dva = lgb.Dataset(Xva, yva, reference=dtr, categorical_feature=cat_cols)
 m = lgb.train(params, dtr, num_boost_round=ROUNDS, valid_sets=[dva],
               callbacks=[lgb.early_stopping(30), lgb.log_evaluation(20)])
 b.log(f"best_iter {m.best_iteration}")
-m.save_model(f"models/lgbm_{TAG}.txt", num_iteration=m.best_iteration)
+m.save_model(f"ghani/models/lgbm_{TAG}.txt", num_iteration=m.best_iteration)
 
 imp = pd.Series(m.feature_importance("gain"), index=feats).sort_values(ascending=False)
 b.log("top gain: " + ", ".join(f"{k}={v:.0f}" for k, v in imp.head(15).items()))
-imp.to_csv(f"cache/importance_{TAG}.csv")
+imp.to_csv(f"ghani/cache/importance_{TAG}.csv")
 
 pva = m.predict(Xva, num_iteration=m.best_iteration)
 base = f1_score(yva, pva.argmax(1), average="macro")
@@ -109,11 +109,12 @@ for _ in range(3):
 b.log(f"valid macro F1 tuned: {best:.5f} w={np.round(w, 3).tolist()}")
 
 pte = m.predict(te[feats], num_iteration=m.best_iteration)
-np.save(f"cache/proba_{TAG}_test.npy", pte.astype("float32"))
-np.save(f"cache/proba_{TAG}_valid.npy", pva.astype("float32"))
-np.save(f"cache/yva_{TAG}.npy", yva)
+np.save(f"ghani/cache/proba_{TAG}_test.npy", pte.astype("float32"))
+np.save(f"ghani/cache/proba_{TAG}_valid.npy", pva.astype("float32"))
+np.save(f"ghani/cache/yva_{TAG}.npy", yva)
 sub = pd.DataFrame({"shipment_id": te["shipment_id"], "status_penanganan": [classes[i] for i in (pte * w).argmax(1)]})
-sub.to_csv(f"submissions/submission_{TAG}.csv", index=False)
+sub.to_csv(f"submissions/submission_{TAG}_ghani.csv", index=False)
 json.dump({"classes": classes, "weights": w.tolist(), "features": feats, "valid_macro_f1": best,
-           "best_iter": m.best_iteration}, open(f"models/meta_{TAG}.json", "w"))
+           "best_iter": m.best_iteration}, open(f"ghani/models/meta_{TAG}.json", "w"))
 b.log("done " + str(sub["status_penanganan"].value_counts(normalize=True).round(3).to_dict()))
+

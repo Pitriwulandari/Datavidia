@@ -1,7 +1,7 @@
 """Baseline cepat Task-1 Datavidia 11.0: agregasi tabel relasional (hemat RAM, chunked) + LightGBM + tuning bobot kelas (Macro F1).
 
-Jalankan:  python src/baseline_lgbm.py        (env SUB_N=450000 untuk ukuran subsample training)
-Output  :  models/lgbm_v1.txt, models/meta_v1.json, submissions/submission_v1.csv
+Jalankan:  python ghani/src/baseline_lgbm.py        (env SUB_N=450000 untuk ukuran subsample training)
+Output  :  ghani/models/lgbm_v1.txt, ghani/models/meta_v1.json, submissions/submission_v1_ghani.csv
 """
 import json
 import os
@@ -108,7 +108,7 @@ def build(split):
 
 
 def main():
-    os.makedirs("models", exist_ok=True)
+    os.makedirs("ghani/models", exist_ok=True)
     os.makedirs("submissions", exist_ok=True)
     tr = build("train")
     te = build("test")
@@ -141,7 +141,7 @@ def main():
     model = lgb.train(params, dtr, num_boost_round=300, valid_sets=[dva],
                       callbacks=[lgb.early_stopping(25), lgb.log_evaluation(25)])
     log(f"best_iter {model.best_iteration}")
-    model.save_model("models/lgbm_v1.txt", num_iteration=model.best_iteration)
+    model.save_model("ghani/models/lgbm_v1.txt", num_iteration=model.best_iteration)
 
     pva = model.predict(Xva, num_iteration=model.best_iteration)
     base = f1_score(yva, pva.argmax(1), average="macro")
@@ -162,11 +162,12 @@ def main():
     pte = model.predict(te[feats], num_iteration=model.best_iteration)
     pred = (pte * w).argmax(1)
     sub = pd.DataFrame({"shipment_id": te["shipment_id"], "status_penanganan": [classes[i] for i in pred]})
-    sub.to_csv("submissions/submission_v1.csv", index=False)
+    sub.to_csv("submissions/submission_v1_ghani.csv", index=False)
     json.dump({"classes": classes, "weights": w.tolist(), "features": feats, "cat_cols": cat_cols,
-               "valid_macro_f1": best, "best_iter": model.best_iteration}, open("models/meta_v1.json", "w"))
+               "valid_macro_f1": best, "best_iter": model.best_iteration}, open("ghani/models/meta_v1.json", "w"))
     log("done. " + str(sub["status_penanganan"].value_counts(normalize=True).round(3).to_dict()))
 
 
 if __name__ == "__main__":
     main()
+

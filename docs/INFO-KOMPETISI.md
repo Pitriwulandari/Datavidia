@@ -1,4 +1,4 @@
-﻿# ðŸ“š Info Kompetisi: Task-1 Datavidia 11.0 (Shipment Logistic Dataset)
+# ðŸ“š Info Kompetisi: Task-1 Datavidia 11.0 (Shipment Logistic Dataset)
 
 Catatan terkumpul dari halaman Kaggle (Overview, Data, Leaderboard, Rules).
 Link: https://www.kaggle.com/competitions/task-1-datavidia-11-0
