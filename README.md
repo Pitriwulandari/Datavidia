@@ -58,7 +58,7 @@ datavidia/
 
 **Penamaan submission:** `submissions/submission_v{n}_{nama}.csv` (contoh: `submission_v1_ghani.csv`). Nomor n = urutan eksperimen orang tersebut, dicatat di `{nama}/results/LOG.md`.
 
-**Aturan kerja:** eksperimen pribadi di folder masing-masing; notebook final untuk dikumpulkan ke panitia disiapkan dari folder anggota yang skornya terbaik (saat ini `ghani/`). Dataset, model, dan submission tidak di-commit.
+**Aturan kerja:** eksperimen pribadi di folder masing-masing; notebook final untuk dikumpulkan ke panitia disiapkan dari folder anggota yang skornya terbaik. Dataset, model, dan submission tidak di-commit.
 
 ---
 
