@@ -24,7 +24,7 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 - **Tantangan:** Memprediksi status akhir penanganan paket pengiriman (**lancar**, **telat**, **rusak**, atau **retur**) sedini mungkin dari data awal.
 - **Tujuan Bisnis:** Mengidentifikasi potensi anomali/kegagalan pengiriman secara preventif sebelum kendala terjadi di lapangan.
 - **Tipe Tugas:** *Multi-class Classification*.
-- **Detail & Tautan:** Lihat [TASK-1.md](file:///C:/laragon/www/unpam/arkadivia/datavidia/TASK-1.md).
+- **Detail & Tautan:** Lihat [TASK-1.md](docs/TASK-1.md).
 
 ---
 
@@ -32,29 +32,33 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 
 ```text
 datavidia/
-├── pitri/                  # Workspace / folder kerja Pitri
-├── farhat/                 # Workspace / folder kerja Farhat
-├── ghani/                  # Workspace / folder kerja Ghani
-├── data/
-│   ├── raw/                # Dataset mentah dari panitia kompetisi
-│   ├── processed/          # Dataset hasil pembersihan & rekayasa fitur
-│   └── external/           # Data eksternal pendukung (jika diperbolehkan)
-├── notebooks/
-│   ├── 01_eda.ipynb                     # Analisis eksplorasi data & visualisasi
-│   ├── 02_preprocessing_features.ipynb  # Pembersihan data & feature engineering
-│   ├── 03_baseline_model.ipynb          # Model baseline & cross-validation setup
-│   └── 04_advanced_modeling.ipynb       # Tuning, ensemble/stacking model
-├── src/
-│   ├── __init__.py
-│   ├── data_loader.py      # Script pemuatan dan sanitasi data
-│   ├── features.py         # Fungsi transformasi & ekstraksi fitur
-│   ├── models.py           # Arsitektur & pelatihan model
-│   └── utils.py            # Metrik evaluasi & fungsi pembantu (helper)
-├── submissions/            # Berkas hasil prediksi (submission.csv)
-├── requirements.txt        # Daftar dependensi & library Python
-├── TASK-1.md               # Pengumuman, link Kaggle & kontak panitia
-└── README.md               # Dokumentasi proyek
+├── docs/                           # Dokumentasi & catatan kompetisi
+│   ├── TASK-1.md                   # Pengumuman, link Kaggle, kontak panitia
+│   └── INFO-KOMPETISI.md           # Overview, data, leaderboard, aturan lengkap
+├── pitri/                          # Workspace pribadi (eksperimen, tidak masuk pipeline utama)
+│   ├── notebooks/
+│   └── results/                    # Screenshot / hasil evaluasi
+├── farhat/                         # Workspace pribadi
+│   └── notebooks/
+├── ghani/                          # Workspace pribadi
+│   ├── notebooks/
+│   └── results/
+├── notebooks/                      # Notebook bersama / final (dikumpulkan ke panitia)
+├── src/                            # Kode bersama (pipeline yang dipakai tim)
+│   └── baseline_lgbm.py            # Baseline: agregasi 9 tabel + LightGBM + tuning bobot kelas
+├── models/                         # File model hasil training (di-ignore git)
+├── submissions/                    # File prediksi untuk Kaggle (di-ignore git)
+├── data/                           # Data lokal (di-ignore git, dilarang dipublikasi)
+│   └── archive/                    # Zip asli dari Kaggle
+├── Task-1-Datavidia-11.0/          # Data hasil ekstrak (train/, test/) - di-ignore git
+├── requirements.txt                # Dependensi Python
+├── .gitignore
+└── README.md
 ```
+
+> **Catatan:** `Task-1-Datavidia-11.0/` masih di root karena path-nya dipakai `src/baseline_lgbm.py`. Setelah pipeline stabil, bisa dipindah ke `data/raw/` dengan mengubah `ROOT` di skrip.
+
+**Aturan kerja:** eksperimen pribadi di folder masing-masing; kode yang sudah terbukti naik skor dipindah ke `src/` dan notebook final ke `notebooks/`. Dataset, model, dan submission tidak di-commit.
 
 ---
 

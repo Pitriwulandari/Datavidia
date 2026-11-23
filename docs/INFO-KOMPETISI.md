@@ -1,10 +1,10 @@
-# 📚 Info Kompetisi: Task-1 Datavidia 11.0 (Shipment Logistic Dataset)
+﻿# ðŸ“š Info Kompetisi: Task-1 Datavidia 11.0 (Shipment Logistic Dataset)
 
 Catatan terkumpul dari halaman Kaggle (Overview, Data, Leaderboard, Rules).
 Link: https://www.kaggle.com/competitions/task-1-datavidia-11-0
 Penyelenggara: [Datavidia](https://www.kaggle.com/datavidia) (HMIF ITB, bagian dari Arkavidia). Tipe: Community Prediction Competition (Private).
 
-> Snapshot halaman diambil sekitar 23 Nov 2026 22:30 WIB, tertulis **"2 days to go"** (cek tenggat pasti di Kaggle: Overview → Timeline).
+> Snapshot halaman diambil sekitar 23 Nov 2026 22:30 WIB, tertulis **"2 days to go"** (cek tenggat pasti di Kaggle: Overview â†’ Timeline).
 
 ---
 
@@ -41,9 +41,9 @@ Penyelenggara: [Datavidia](https://www.kaggle.com/datavidia) (HMIF ITB, bagian d
   - Bersama (di folder train dan test): `customers.csv`, `couriers.csv`, `hubs.csv`, `service_packages.csv`, `promotions.csv`.
   - `sample_submission.csv`.
 - Lisensi data: MIT.
-- Kolom per tabel (dari cek lokal) dan distribusi target: lihat [pitri/](pitri/) / catatan EDA berikutnya.
+- Kolom per tabel (dari cek lokal) dan distribusi target: lihat [pitri/](../pitri/) / catatan EDA berikutnya.
 
-**Distribusi target (train):** normal 38,08% · konfirmasi_alamat 21,94% · tertunda_operasional 14,92% · gagal_antar_awal 10,00% · retur_pengirim 7,06% · rusak_perjalanan 4,98% · klaim_hilang 3,03%.
+**Distribusi target (train):** normal 38,08% Â· konfirmasi_alamat 21,94% Â· tertunda_operasional 14,92% Â· gagal_antar_awal 10,00% Â· retur_pengirim 7,06% Â· rusak_perjalanan 4,98% Â· klaim_hilang 3,03%.
 
 ## 4. Leaderboard (snapshot)
 - Public LB memakai ~30% test; private memakai 70% sisanya (**bisa berubah drastis, hindari overfit ke public**).
@@ -67,7 +67,7 @@ Penyelenggara: [Datavidia](https://www.kaggle.com/datavidia) (HMIF ITB, bagian d
 
 **Deliverable notebook & model**
 - Notebook menjelaskan: pemrosesan data, penggabungan tabel, pembuatan fitur, pengembangan model, training, cara prediksi.
-- Notebook harus bisa **inferensi tanpa melatih ulang** → simpan file model (`.pkl`, `.joblib`, `.json`, `.txt`, `.cbm`, `.pt`, dll).
+- Notebook harus bisa **inferensi tanpa melatih ulang** â†’ simpan file model (`.pkl`, `.joblib`, `.json`, `.txt`, `.cbm`, `.pt`, dll).
 - Output yang ditampilkan harus dihasilkan kode (bukan dimasukkan manual).
 - Jelaskan dependensi & langkah load model.
 
@@ -79,7 +79,7 @@ Penyelenggara: [Datavidia](https://www.kaggle.com/datavidia) (HMIF ITB, bagian d
 
 ## 6. Catatan Untuk Tim (Pitri, Farhat, Ghani)
 - [ ] Ketiga anggota klik **Join Competition** dan setujui rules, lalu bentuk/konfirmasi tim (3 orang) di Kaggle.
-- [ ] Catat tenggat final di Overview → Timeline.
+- [ ] Catat tenggat final di Overview â†’ Timeline.
 - [ ] Rencana submission: maks 3/hari, sisakan jatah; tandai 2 submission final.
 - [ ] Gunakan **CV lokal (stratified)** sebagai acuan utama, jangan mengejar public LB saja.
 - [ ] Siapkan notebook akhir + file model + penjelasan dependensi.
@@ -126,3 +126,4 @@ Aturan Kaggle ini **mengalahkan** aturan khusus Datavidia jika bentrok.
 - [ ] Jika pakai TabPFN: bobot publik, dijalankan sendiri, cantumkan sumber/versi/modifikasi.
 - [ ] Cek email akun Kaggle setelah pengumuman (notifikasi pemenang batas 1 minggu).
 - [ ] Hitung deadline dalam WIB; jangan menunggu menit terakhir (jatah 3 submission/hari).
+
