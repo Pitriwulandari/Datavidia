@@ -30,6 +30,9 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 
 ```text
 datavidia/
+├── pitri/                  # Workspace / folder kerja Pitri
+├── farhat/                 # Workspace / folder kerja Farhat
+├── ghani/                  # Workspace / folder kerja Ghani
 ├── data/
 │   ├── raw/                # Dataset mentah dari panitia kompetisi
 │   ├── processed/          # Dataset hasil pembersihan & rekayasa fitur
@@ -47,6 +50,7 @@ datavidia/
 │   └── utils.py            # Metrik evaluasi & fungsi pembantu (helper)
 ├── submissions/            # Berkas hasil prediksi (submission.csv)
 ├── requirements.txt        # Daftar dependensi & library Python
+├── TASK-1.md               # Pengumuman, link Kaggle & kontak panitia
 └── README.md               # Dokumentasi proyek
 ```
 
