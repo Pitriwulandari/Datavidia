@@ -104,7 +104,3 @@ $RECYCLE.BIN/
 # Cache fitur
 ghani/cache/
 
-
-# Model per anggota (tambahkan manual dengan git add -f untuk file final)
-ghani/models/*
-!ghani/models/.gitkeep

@@ -35,28 +35,30 @@ datavidia/
 ├── docs/                           # Dokumentasi & catatan kompetisi
 │   ├── TASK-1.md                   # Pengumuman, link Kaggle, kontak panitia
 │   └── INFO-KOMPETISI.md           # Overview, data, leaderboard, aturan lengkap
-├── pitri/                          # Workspace pribadi (eksperimen, tidak masuk pipeline utama)
-│   ├── notebooks/
-│   └── results/                    # Screenshot / hasil evaluasi
-├── farhat/                         # Workspace pribadi
-│   └── notebooks/
-├── ghani/                          # Workspace pribadi
+├── pitri/                          # Workspace pribadi Pitri
 │   ├── notebooks/
 │   └── results/
+├── farhat/                         # Workspace pribadi Farhat
+│   └── notebooks/
+├── ghani/                          # Workspace pribadi Ghani (kode, model, cache, log)
+│   ├── src/                        # baseline_lgbm.py, features_v2.py, train_v2.py
+│   ├── models/                     # lgbm_v*.txt, meta_v*.json (di-ignore git)
+│   ├── cache/                      # fitur & probabilitas (di-ignore git)
+│   ├── notebooks/
+│   └── results/LOG.md              # Riwayat eksperimen & skor
 ├── notebooks/                      # Notebook bersama / final (dikumpulkan ke panitia)
-├── src/                            # Kode bersama (pipeline yang dipakai tim)
-│   └── baseline_lgbm.py            # Baseline: agregasi 9 tabel + LightGBM + tuning bobot kelas
-├── models/                         # File model hasil training (di-ignore git)
-├── submissions/                    # File prediksi untuk Kaggle (di-ignore git)
-├── data/                           # Data lokal (di-ignore git, dilarang dipublikasi)
-│   └── archive/                    # Zip asli dari Kaggle
+├── src/                            # Kode bersama yang sudah terbukti (kosong dulu)
+├── submissions/                    # submission_v{n}_{nama}.csv (di-ignore git)
+├── data/archive/                   # Zip asli dari Kaggle (di-ignore git)
 ├── Task-1-Datavidia-11.0/          # Data hasil ekstrak (train/, test/) - di-ignore git
-├── requirements.txt                # Dependensi Python
+├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
-> **Catatan:** `Task-1-Datavidia-11.0/` masih di root karena path-nya dipakai `src/baseline_lgbm.py`. Setelah pipeline stabil, bisa dipindah ke `data/raw/` dengan mengubah `ROOT` di skrip.
+> **Catatan:** `Task-1-Datavidia-11.0/` masih di root karena path-nya dipakai skrip di `ghani/src/`. Setelah pipeline stabil, bisa dipindah ke `data/raw/` dengan mengubah `ROOT` di `ghani/src/baseline_lgbm.py`.
+
+**Penamaan submission:** `submissions/submission_v{n}_{nama}.csv` (contoh: `submission_v1_ghani.csv`). Nomor n = urutan eksperimen orang tersebut, dicatat di `{nama}/results/LOG.md`.
 
 **Aturan kerja:** eksperimen pribadi di folder masing-masing; kode yang sudah terbukti naik skor dipindah ke `src/` dan notebook final ke `notebooks/`. Dataset, model, dan submission tidak di-commit.
 
