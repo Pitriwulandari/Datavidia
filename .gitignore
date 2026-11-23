@@ -100,3 +100,6 @@ ENV/
 Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
+
+# Cache fitur
+cache/
