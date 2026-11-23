@@ -16,13 +16,15 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 
 ---
 
-## 📌 Tentang Kompetisi
+## 📌 Tentang Kompetisi & Task-1
 
-**Datavidia** merupakan salah satu cabang kompetisi analitik data dan *data science* nasional dalam rangkaian acara **Arkavidia**. Kompetisi ini menantang peserta untuk menyelesaikan permasalahan berbasis data dunia nyata (*real-world problem*) melalui tahapan:
-1. **Eksplorasi Data (EDA)** untuk menemukan pola, anomali, dan korelasi penting.
-2. **Rekayasa Fitur (Feature Engineering)** untuk mengekstrak sinyal prediktif terbaik.
-3. **Pemodelan Prediktif (Machine Learning / Deep Learning)** dengan strategi validasi yang ketat.
-4. **Penyusunan Solusi & Wawasan Bisnis** yang komprehensif dan dapat dipertanggungjawabkan.
+**Datavidia** merupakan salah satu cabang kompetisi analitik data dan *data science* nasional dalam rangkaian acara **Arkavidia**.
+
+### 🎯 Objektif Task-1 (Status Penanganan Paket)
+- **Tantangan:** Memprediksi status akhir penanganan paket pengiriman (**lancar**, **telat**, **rusak**, atau **retur**) sedini mungkin dari data awal.
+- **Tujuan Bisnis:** Mengidentifikasi potensi anomali/kegagalan pengiriman secara preventif sebelum kendala terjadi di lapangan.
+- **Tipe Tugas:** *Multi-class Classification*.
+- **Detail & Tautan:** Lihat [TASK-1.md](file:///C:/laragon/www/unpam/arkadivia/datavidia/TASK-1.md).
 
 ---
 
