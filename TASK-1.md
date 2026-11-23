@@ -9,6 +9,8 @@ Informasi resmi mengenai pengerjaan **Task-1 Datavidia - Arkavidia**.
 
 ---
 
+> Detail lengkap (overview, data, leaderboard, aturan): lihat [INFO-KOMPETISI.md](INFO-KOMPETISI.md).
+
 ## 📱 Kontak Panitia (Contact Person)
 Jika terdapat kendala dalam mengakses kompetisi atau pertanyaan seputar teknis tugas, dapat langsung menghubungi:
 - **Majiid:** `081360758309`
