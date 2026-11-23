@@ -28,4 +28,4 @@ TAG=v5 python ghani/src/train_v2.py        # PowerShell: $env:TAG='v5'; python g
 
 ## Aturan
 - Jangan commit data, model, cache, atau submission (sudah di-ignore).
-- Kode yang terbukti menaikkan skor dipindah ke `../src/` (bersama), notebook final ke `../notebooks/`.
+- Notebook final untuk panitia (pemrosesan data, fitur, training, inferensi tanpa training ulang) disusun di `notebooks/` folder ini dan menyertakan file model dari `models/`.

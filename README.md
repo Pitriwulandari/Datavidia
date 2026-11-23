@@ -46,8 +46,6 @@ datavidia/
 │   ├── cache/                      # fitur & probabilitas (di-ignore git)
 │   ├── notebooks/
 │   └── results/LOG.md              # Riwayat eksperimen & skor
-├── notebooks/                      # Notebook bersama / final (dikumpulkan ke panitia)
-├── src/                            # Kode bersama yang sudah terbukti (kosong dulu)
 ├── submissions/                    # submission_v{n}_{nama}.csv (di-ignore git)
 ├── data/archive/                   # Zip asli dari Kaggle (di-ignore git)
 ├── Task-1-Datavidia-11.0/          # Data hasil ekstrak (train/, test/) - di-ignore git
@@ -60,7 +58,7 @@ datavidia/
 
 **Penamaan submission:** `submissions/submission_v{n}_{nama}.csv` (contoh: `submission_v1_ghani.csv`). Nomor n = urutan eksperimen orang tersebut, dicatat di `{nama}/results/LOG.md`.
 
-**Aturan kerja:** eksperimen pribadi di folder masing-masing; kode yang sudah terbukti naik skor dipindah ke `src/` dan notebook final ke `notebooks/`. Dataset, model, dan submission tidak di-commit.
+**Aturan kerja:** eksperimen pribadi di folder masing-masing; notebook final untuk dikumpulkan ke panitia disiapkan dari folder anggota yang skornya terbaik (saat ini `ghani/`). Dataset, model, dan submission tidak di-commit.
 
 ---
 
@@ -120,7 +118,7 @@ pip install -r requirements.txt
 
 ### 4. Menjalankan Notebook
 ```bash
-jupyter notebook notebooks/
+jupyter notebook ghani/notebooks/
 ```
 
 ---
