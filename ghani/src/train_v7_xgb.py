@@ -43,6 +43,9 @@ def main():
     sim_w, _ = compute_test_sim_weights(n_tr, n_te, tr["is_peak_month"].to_numpy(), te["is_peak_month"].to_numpy())
     feats = get_v7_feature_cols(tr)
     log(f"Loaded feat_v7 for XGBoost: tr={tr.shape}, te={te.shape}, feats={len(feats)}")
+    tr.drop(columns=[c for c in tr.columns if c not in feats], inplace=True)
+    te.drop(columns=[c for c in te.columns if c not in feats], inplace=True)
+    gc.collect()
 
     oof_logits = np.zeros((len(y), K), dtype=np.float32)
     te_logits = np.zeros((len(te), K), dtype=np.float32)

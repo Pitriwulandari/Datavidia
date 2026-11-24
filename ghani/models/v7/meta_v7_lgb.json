@@ -1,0 +1,32 @@
+{
+  "winner": "LGB_unw+tew+HC_GLMM",
+  "classes": [
+    "gagal_antar_awal",
+    "klaim_hilang",
+    "konfirmasi_alamat",
+    "normal",
+    "retur_pengirim",
+    "rusak_perjalanan",
+    "tertunda_operasional"
+  ],
+  "class_multipliers": [
+    1.1234238709139834,
+    1.4740960776726506,
+    0.813784132855273,
+    0.7495759151043331,
+    1.2283554885491057,
+    1.1429297883425766,
+    0.7051184811939142
+  ],
+  "test_sim_ll": 0.7947763904546904,
+  "test_sim_f1": 0.6256747849110702,
+  "test_distribution": {
+    "normal": 0.3872,
+    "konfirmasi_alamat": 0.2093,
+    "tertunda_operasional": 0.1496,
+    "gagal_antar_awal": 0.1027,
+    "retur_pengirim": 0.0728,
+    "rusak_perjalanan": 0.0484,
+    "klaim_hilang": 0.03
+  }
+}

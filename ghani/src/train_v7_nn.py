@@ -132,6 +132,9 @@ def main():
     cat_cols = [c for c in feats if str(tr[c].dtype) == "category"]
     num_cols = [c for c in feats if c not in cat_cols]
     log(f"Loaded feat_v7 for TabularResNetV7: tr={tr.shape}, te={te.shape}, num={len(num_cols)}, cat={len(cat_cols)}")
+    tr.drop(columns=[c for c in tr.columns if c not in feats], inplace=True)
+    te.drop(columns=[c for c in te.columns if c not in feats], inplace=True)
+    gc.collect()
 
     oof_logits = np.zeros((len(y), K), dtype=np.float32)
     te_logits = np.zeros((len(te), K), dtype=np.float32)
