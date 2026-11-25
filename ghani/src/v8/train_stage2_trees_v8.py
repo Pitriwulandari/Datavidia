@@ -43,28 +43,28 @@ def run_lgb_variant(mode, tr_base, te_base, y, folds, K, n_cust_all, cat_cols):
 
     if mode == "lgb_res":
         params = dict(
-            objective="multiclass", num_class=K, learning_rate=0.045, num_leaves=31,
-            min_child_samples=150, subsample=0.8, subsample_freq=1, colsample_bytree=0.50,
-            reg_lambda=20.0, reg_alpha=2.0, max_bin=127, cat_smooth=25.0,
+            objective="multiclass", num_class=K, learning_rate=0.06, num_leaves=31,
+            min_child_samples=150, subsample=0.8, subsample_freq=1, colsample_bytree=0.45,
+            reg_lambda=20.0, reg_alpha=2.0, max_bin=63, cat_smooth=25.0,
             verbose=-1, n_jobs=os.cpu_count(),
         )
-        max_rounds = 550
+        max_rounds = 420
     elif mode == "lgb_full":
         params = dict(
-            objective="multiclass", num_class=K, learning_rate=0.065, num_leaves=63,
-            min_child_samples=120, subsample=0.8, subsample_freq=1, colsample_bytree=0.50,
-            reg_lambda=15.0, reg_alpha=1.5, max_bin=127, cat_smooth=20.0,
+            objective="multiclass", num_class=K, learning_rate=0.085, num_leaves=63,
+            min_child_samples=120, subsample=0.8, subsample_freq=1, colsample_bytree=0.45,
+            reg_lambda=15.0, reg_alpha=1.5, max_bin=63, cat_smooth=20.0,
             verbose=-1, n_jobs=os.cpu_count(),
         )
-        max_rounds = 900
+        max_rounds = 650
     elif mode == "lgb_et":
         params = dict(
-            objective="multiclass", num_class=K, learning_rate=0.05, num_leaves=95,
+            objective="multiclass", num_class=K, learning_rate=0.065, num_leaves=95,
             extra_trees=True, min_child_samples=150, subsample=0.8, subsample_freq=1,
-            colsample_bytree=0.45, reg_lambda=25.0, reg_alpha=2.5, max_bin=127, cat_smooth=25.0,
+            colsample_bytree=0.45, reg_lambda=25.0, reg_alpha=2.5, max_bin=63, cat_smooth=25.0,
             verbose=-1, n_jobs=os.cpu_count(),
         )
-        max_rounds = 600
+        max_rounds = 450
     else:
         raise ValueError(mode)
 
@@ -110,7 +110,7 @@ def run_lgb_variant(mode, tr_base, te_base, y, folds, K, n_cust_all, cat_cols):
             dtr,
             num_boost_round=max_rounds,
             valid_sets=[dva],
-            callbacks=[lgb.early_stopping(40), lgb.log_evaluation(100)],
+            callbacks=[lgb.early_stopping(30), lgb.log_evaluation(100)],
         )
         del dtr, dva
         gc.collect()
@@ -154,12 +154,12 @@ def run_xgb_res(tr_base, te_base, y, folds, K, n_cust_all):
         num_class=K,
         eval_metric="mlogloss",
         tree_method="hist",
-        max_bin=128,
+        max_bin=64,
         max_depth=6,
         min_child_weight=50.0,
-        learning_rate=0.055,
+        learning_rate=0.075,
         subsample=0.8,
-        colsample_bytree=0.50,
+        colsample_bytree=0.45,
         colsample_bylevel=0.70,
         reg_lambda=15.0,
         reg_alpha=2.0,
@@ -196,9 +196,9 @@ def run_xgb_res(tr_base, te_base, y, folds, K, n_cust_all):
         model = xgb.train(
             dict(params, seed=42 + f),
             dtr,
-            num_boost_round=700,
+            num_boost_round=500,
             evals=[(dva, "val")],
-            early_stopping_rounds=40,
+            early_stopping_rounds=30,
             verbose_eval=100,
         )
         model.save_model(m_path)
@@ -240,7 +240,7 @@ def main():
     n_cust_all = int(max(tr_base["customer_id_code"].max(), te_base["customer_id_code"].max())) + 1
     cat_cols = [c for c in v8c.get_base_feature_cols(tr_base) if str(tr_base[c].dtype) == "category"]
 
-    modes = [m.strip() for m in os.environ.get("MODES", "lgb_res,lgb_full,lgb_et,xgb").split(",") if m.strip()]
+    modes = [m.strip() for m in os.environ.get("MODES", "lgb_res,lgb_full,xgb").split(",") if m.strip()]
     for m in modes:
         if m == "xgb":
             run_xgb_res(tr_base, te_base, y, folds, K, n_cust_all)
