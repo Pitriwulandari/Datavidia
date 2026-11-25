@@ -138,7 +138,7 @@ def main():
         ("HC_GLMM",   "ghani/cache/v7/glmm_hc_oof_proba.npy",  "ghani/cache/v7/glmm_hc_test_proba.npy",  False),
         ("XGBoost",   "ghani/cache/v7/xgb_oof_logits.npy",     "ghani/cache/v7/xgb_test_logits.npy",     True),
         ("ResNetV7",  "ghani/cache/v7/nn_oof_logits.npy",      "ghani/cache/v7/nn_test_logits.npy",      True),
-        ("CatBoost",  "ghani/cache/v8/cb_oof_logits.npy",      "ghani/cache/v8/cb_test_logits.npy",      True),
+        ("LGB_ET",    "ghani/cache/v8/lgb_et_oof_logits.npy",  "ghani/cache/v8/lgb_et_test_logits.npy",  True),
         ("RGGatedNN", "ghani/cache/v8/rg_nn_oof_logits.npy",   "ghani/cache/v8/rg_nn_test_logits.npy",   True),
     ]
 

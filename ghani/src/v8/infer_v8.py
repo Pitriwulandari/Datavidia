@@ -158,18 +158,16 @@ def run_inference_v8(output_path="ghani/cache/v8/submission_v8_reproduced_check.
         gc.collect()
     outputs["ResNetV7"] = (nn_te, True)
 
-    # 6. CatBoost (if in ensemble)
-    if "CatBoost" in meta["models"]:
-        log("Stage 6/7: Running 5-Fold Symmetric CatBoost inference ...")
-        cb_spec = joblib.load("ghani/models/v8/catboost/cb_spec.joblib")
-        Xcb = Pool(build_cb_test_matrix(X_te, cb_spec))
-        cb_te = np.zeros((N_te, K), dtype=np.float32)
+    # 6. LGB_ET (if in ensemble)
+    if "LGB_ET" in meta["models"]:
+        log("Stage 6/7: Running 5-Fold LGB_ExtraTrees inference ...")
+        X_et = X_te[[c for c in feats if c != "cu_loo_n"]]
+        et_te = np.zeros((N_te, K), dtype=np.float32)
         for f in range(5):
-            cb = CatBoostClassifier()
-            cb.load_model(f"ghani/models/v8/catboost/cb_f{f}.cbm")
-            cb_te += cb.predict(Xcb, prediction_type="RawFormulaVal").astype(np.float32) / 5.0
-        outputs["CatBoost"] = (cb_te, True)
-        del Xcb
+            bst = lgb.Booster(model_file=f"ghani/models/v8/lgb_et/lgb_f{f}.txt")
+            et_te += bst.predict(X_et, raw_score=True).astype(np.float32) / 5.0
+        outputs["LGB_ET"] = (et_te, True)
+        del X_et
         gc.collect()
 
     # 7. RankGaussGatedResNet (if in ensemble)
