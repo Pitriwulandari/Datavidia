@@ -179,7 +179,7 @@ REF_FINAL = "submissions/submission_v8_ghani.csv"
 
 sub_v8 = infer_v8.run_inference(
     output_path=OUT_REPRO,
-    rebuild_features=True,
+    rebuild_features=False,
     verify_path=REF_FINAL,
 )
 """))
