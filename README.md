@@ -40,13 +40,13 @@ datavidia/
 │   └── results/
 ├── farhat/                         # Workspace pribadi Farhat
 │   └── notebooks/
-├── ghani/                          # Workspace pribadi Ghani (kode, model, cache, log)
-│   ├── src/                        # baseline_lgbm.py, features_v2.py, train_v2.py
-│   ├── models/                     # lgbm_v*.txt, meta_v*.json (di-ignore git)
-│   ├── cache/                      # fitur & probabilitas (di-ignore git)
-│   ├── notebooks/
-│   └── results/LOG.md              # Riwayat eksperimen & skor
-├── submissions/                    # submission_v{n}_{nama}.csv (di-ignore git)
+├── ghani/                          # Workspace pribadi Ghani (terorganisasi rapi per versi v1..v7)
+│   ├── src/                        # common/ + v1/ s/d v7/ (kode fitur, training, ensemble, inferensi)
+│   ├── models/                     # v1/ s/d v7/ (file bobot model & metadata zero-retraining)
+│   ├── cache/                      # v1/ s/d v7/ (cache fitur & OOF logits - di-ignore git)
+│   ├── notebooks/                  # v6/ & v7/final_datavidia_task1_v7_ghani.ipynb
+│   └── results/LOG.md              # Riwayat lengkap eksperimen v1 s/d v7 & skor
+├── submissions/                    # submission_v1_ghani.csv s/d submission_v7_ghani.csv (di-ignore git)
 ├── data/archive/                   # Zip asli dari Kaggle (di-ignore git)
 ├── Task-1-Datavidia-11.0/          # Data hasil ekstrak (train/, test/) - di-ignore git
 ├── requirements.txt
@@ -125,12 +125,15 @@ jupyter notebook ghani/notebooks/
 
 ## 📈 Eksperimen & Riwayat Skor
 
-| Model ID | Pendekatan / Fitur | CV Score | Leaderboard Public | Leaderboard Private | Keterangan |
+| Model ID | Pendekatan / Fitur | CV Macro F1 | Leaderboard Public | Leaderboard Private | Keterangan |
 |---|---|---|---|---|---|
-| `v1.0` | Baseline Model (Logistic Reg / Random Forest) | - | - | - | Benchmark awal |
-| `v2.0` | LightGBM + Basic Preprocessing | - | - | - | Peningkatan akurasi/F1 |
-| `v3.0` | XGBoost + CatBoost + Feature Engineering | - | - | - | Optimasi fitur |
-| `v4.0` | Ensemble / Stacking Final | - | - | - | Prediksi final terpilih |
+| `v1` | Baseline LightGBM + agregasi dasar 9 tabel | `0.4941` | - | - | Benchmark awal |
+| `v2` | LightGBM + fitur sekuensial scan | `0.5018` | - | - | Eksplorasi urutan event |
+| `v3` | LightGBM + OOF Target Encoding (sub 450rb) | `0.5732` | - | - | Lompatan sinyal entitas |
+| `v4` | LightGBM + OOF Target Encoding (full 1,05jt) | `0.5785` | - | - | Skala penuh |
+| `v5` | Feature Eng v5 + Stage-1 LGB + Joint GLMM | `0.61911` | - | - | 5-Fold Stratified CV |
+| `v6` | Stage-2 Super-Ensemble 6 model + Joint GLMM | `0.62561` | `0.60163` (#18) | - | Audit DGP menemukan gap `u_cust` |
+| **`v7`** | **Pure Within-Split (`cu_sp_*`) + 5-Fold `GroupKFold` Super-Ensemble** | **`0.62949`** *(sim `0.62866`)* | *(siap submit)* | - | **Kandidat utama #1 (bebas leakage)** |
 
 ---
 

@@ -1,0 +1,53 @@
+{
+  "mode": "meta_stacker",
+  "models": [
+    "LGB_unw",
+    "LGB_tew",
+    "HC_GLMM",
+    "XGBoost",
+    "ResNetV7"
+  ],
+  "blend_info": {
+    "C": 0.05,
+    "models": [
+      "LGB_unw",
+      "LGB_tew",
+      "HC_GLMM",
+      "XGBoost",
+      "ResNetV7"
+    ]
+  },
+  "classes": [
+    "gagal_antar_awal",
+    "klaim_hilang",
+    "konfirmasi_alamat",
+    "normal",
+    "retur_pengirim",
+    "rusak_perjalanan",
+    "tertunda_operasional"
+  ],
+  "class_multipliers": {
+    "global": [
+      1.2000126247584775,
+      1.394688694121524,
+      0.8125337003483433,
+      0.6923724578159017,
+      1.2473905805556145,
+      1.2331917121173692,
+      0.6904348123797726
+    ]
+  },
+  "oof_ll": 0.7755091631058143,
+  "cv_macro_f1": 0.6294865571694631,
+  "test_sim_ll": 0.786519347880614,
+  "test_sim_f1": 0.6286586603855719,
+  "test_distribution": {
+    "normal": 0.3766,
+    "konfirmasi_alamat": 0.2081,
+    "tertunda_operasional": 0.1498,
+    "gagal_antar_awal": 0.1102,
+    "retur_pengirim": 0.0734,
+    "rusak_perjalanan": 0.0521,
+    "klaim_hilang": 0.03
+  }
+}

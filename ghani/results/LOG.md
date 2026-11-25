@@ -1,36 +1,57 @@
-# 🧪 Log Eksperimen - Ghani
+# 🧪 Log Eksperimen Lengkap (v1 – v7) — Ghani
 
-Skor validasi v1–v4 = hold-out lokal 15%; v5–v6 = **5-Fold Stratified Cross-Validation penuh (1.243.617 baris OOF, leak-free)**. Kolom "LB public" diisi setelah submit di Kaggle.
+Seluruh kode, model, cache, notebook, dan submission kini telah dirapikan per versi (`v1` s/d `v7`) di setiap folder agar mudah ditelusuri.
 
-| # | Submission | Model | Ringkasan | Data latih | OOF LogLoss | Valid Macro F1 (tuned) | LB public |
-|---|---|---|---|---|---|---|---|
-| v1 | `submission_v1_ghani.csv` | `lgbm_v1.txt` | Agregasi scan/rute/invoice + tabel master, LightGBM | subsample 450 rb | - | 0.4941 | - |
-| v2 | `submission_v2_ghani.csv` | `lgbm_v2.txt` | v1 + fitur urutan scan (first/last, bigram, hub change) | subsample 450 rb | - | 0.5018 | - |
-| v3 | `submission_v3_ghani.csv` | `lgbm_v3.txt` | v2 + target encoding OOF (customer, courier, hub, package, promo, rute) + count encoding | subsample 450 rb | - | 0.5732 | - |
-| v4 | `submission_v4_ghani.csv` | `lgbm_v4.txt` | Sama dengan v3, data penuh, lr 0.08 | 1,05 jt (85% train) | - | 0.5785 | - |
-| Stage-1 | *(internal)* | 5-Fold LightGBM (`stage1/lgb_f0..4.txt`) | Feature Engineering v5: buang ~130 fitur noise, moda-normalized route delay, invoice base vs klaim, profil LOO entitas unsupervised 1,6 jt baris | 5-Fold penuh (1,24 jt) | 0.82372 | 0.60238 | - |
-| v5 | `submission_v5_ghani.csv` | Stage-1 + Joint Hierarchical Multinomial GLMM (`stage2/glmm_state_full.npy`) | Model Bayesian Mixed-Effects simultan pada `hub`, `hub×peak`, `courier`, `customer` dengan prior precision per kelas | 5-Fold penuh (1,24 jt) | 0.79543 | **0.61911** | - |
-| Stage-2a | *(ensemble)* | 5-Fold `LGB_res` (`stage2/lgb_res/`) | Residual-boosted LightGBM (`init_score=glmm_logit`, Fortran order) + 49 fitur GLMM + 19 interaksi domain | 5-Fold penuh (1,24 jt) | 0.78081 | 0.62406 | - |
-| Stage-2b | *(ensemble)* | 5-Fold `LGB_full` (`stage2/lgb_full/`) | Full-tree LightGBM dari awal melihat semua fitur + random effects GLMM (topologi pohon berbeda) | 5-Fold penuh (1,24 jt) | 0.78176 | 0.62339 | - |
-| Stage-2c | *(ensemble)* | 5-Fold `XGBoost` (`stage2/xgb/`) | Depth-wise `hist` XGBoost (`base_margin=glmm_logit`, `max_depth=6`) | 5-Fold penuh (1,24 jt) | 0.78102 | 0.62387 | - |
-| Stage-2d | *(ensemble)* | 5-Fold `TabularResNet` (`stage2/nn/`) | PyTorch 256×2 SiLU ResNet + signed-log1p + residual skip dari GLMM logits | 5-Fold penuh (1,24 jt) | 0.78123 | 0.62431 | - |
-| Stage-2e | *(ensemble)* | 5-Fold `RankGaussResNet` (`stage2/nn2/`) | PyTorch 256×2 SiLU ResNet + QuantileTransformer (RankGauss) + dual skip (`glmm` + `s1`) + Top-3 SWA | 5-Fold penuh (1,24 jt) | 0.78239 | 0.62395 | - |
-| **v6** | **`submission_v6_ensemble_ghani.csv`** | **Hybrid 50% Prob Blend + 50% 5-Fold L2 Meta-Stacker** (`meta_v6_ensemble.json`) | Gabungan 5 arsitektur beragam (3 GBDT + 2 Neural Net PyTorch) + optimasi 7 class multipliers Macro F1 (CV leak-free) | 5-Fold penuh (1,24 jt) | **0.77786** | **0.62561** | *(menunggu hasil Kaggle)* |
+## Ringkasan Progresi Versi (`v1` → `v7`)
 
-## Temuan Utama (EDA & Reverse-Engineering DGP)
-- **Struktur Entitas & ICC:** Terdapat efek laten kuat di level `courier_id` (`tertunda_operasional` ICC 0.359, `gagal_antar_awal` 0.118), `customer_id` (`konfirmasi_alamat` 0.347, `retur_pengirim` 0.238), dan `hub_id` (`tertunda_operasional` 0.198, `klaim_hilang` 0.063).
-- **Profil Unsupervised LOO (1,6 jt baris train+test, bebas bocor target):** Rata-rata LOO `scan_gap` kurir berkorelasi `r = 0.867` dengan `tertunda_operasional`; rata-rata LOO `scan_quality` kurir berkorelasi `r = -0.783` dengan `gagal_antar_awal` (jauh melampaui kolom kasar `co_courier_score`).
-- **Normalisasi Moda Rute:** Rasio keterlambatan `durasi_jam / (jarak_segmen_km / median_speed_moda)` memisahkan `normal`, `tertunda_operasional`, dan kelas insiden lain jauh lebih bersih daripada durasi mentah.
-- **Invoice Terpisah:** Setiap pengiriman memiliki 1 invoice dasar (`pengiriman`/`langganan`) + 0/1 invoice `klaim`; keberadaan `has_klaim_inv` hampir melipatgandakan peluang `retur_pengirim` (5.4% → 14.6%) dan `klaim_hilang`.
-- **Pembersihan Noise:** Kolom `kota_asal`, `kota_tujuan`, `promo_id`/`promotions.csv`, `device_type`, `payment_method`, bigram scan, dan 6 indeks distraktor terbukti 0 sinyal dan dibuang agar model tidak overfit.
-- **Keragaman Arsitektur:** Korelasi prediksi `LGB_res` vs `XGBoost` mencapai `0.9989`, sedangkan `TabularResNet` vs GBDT hanya `0.9918` — sehingga kombinasi GBDT + PyTorch Neural Networks memberikan penurunan LogLoss terbesar (`-0.0030`) dan peningkatan Macro F1 yang konsisten.
-- **Verifikasi Pra-Submit (`v6`):** 362.245 baris tepat, 0 NaN, urutan `shipment_id` 100% cocok dengan `sample_submission.csv`, adversarial AUC train vs test `0.538` (stabil), dan simulasi bootstrap Public LB (30% test) berada pada rentang `0.6229 – 0.6290` (rata-rata `0.6260`).
+| Versi | Folder Kode | Folder Model | File Submission | Skema Validasi | OOF LogLoss | Valid Macro F1 (Tuned) | LB Public | Ringkasan Perubahan Utama |
+|---|---|---|---|---|---|---|---|---|
+| **v1** | [src/v1/](../src/v1/) | [models/v1/](../models/v1/) | `submission_v1_ghani.csv` | Hold-out 15% (sub 450rb) | - | `0.4941` | - | Baseline agregasi scan/rute/invoice + tabel master, LightGBM tunggal |
+| **v2** | [src/v2/](../src/v2/) | [models/v2/](../models/v2/) | `submission_v2_ghani.csv` | Hold-out 15% (sub 450rb) | - | `0.5018` | - | v1 + fitur sekuensial scan (event awal/akhir, bigram, perubahan hub) |
+| **v3** | [src/v3/](../src/v3/) | [models/v3/](../models/v3/) | `submission_v3_ghani.csv` | Hold-out 15% (sub 450rb) | - | `0.5732` | - | v2 + OOF Target Encoding (`customer`, `courier`, `hub`, `package`, `promo`, `rute`) |
+| **v4** | [src/v4/](../src/v4/) | [models/v4/](../models/v4/) | `submission_v4_ghani.csv` | Hold-out 15% (full 1,05jt) | - | `0.5785` | - | Sama dengan v3 pada data penuh (`lr=0.08`) |
+| **v5** | [src/v5/](../src/v5/) | [models/v5/](../models/v5/) | `submission_v5_ghani.csv` | 5-Fold Stratified (1,24jt) | `0.79543` | `0.61911` | - | Feature Engineering v5 (buang ~130 noise, moda-normalized delay, base vs klaim invoice, profil entitas LOO) + Stage-1 LGB (`0.60238`) + Joint GLMM |
+| **v6** | [src/v6/](../src/v6/) | [models/v6/](../models/v6/) | `submission_v6_ghani.csv` | 5-Fold Stratified (1,24jt) | `0.77786` | `0.62561` | **`0.60163`** (#18) | Ensemble 6 model Stage-2 di atas Joint GLMM (`LGB_res`, `LGB_full`, `XGBoost`, `ResNet`, `RGResNet`). **Temuan audit LB:** `u_cust` & `cu_loo` gabungan `train+test` bocor di StratifiedKFold namun 0 korelasi di `test` (`-0.024` gap)! |
+| **v7** *(Final)* | [src/v7/](../src/v7/) | [models/v7/](../models/v7/) | **`submission_v7_ghani.csv`** | **5-Fold `GroupKFold(customer_id)`** (0% overlap!) | **`0.77551`** *(sim `0.78652`)* | **`0.62949`** *(TEST-SIM **`0.62866`**)* | *(siap submit!)* | **Perbaikan fundamental DGP:** 122 fitur *pure within-split* `cu_sp_*` + deviasi kurir bebas drift + hapus polusi `u_cust` + Ensemble 5 model (`LGB_unw`, `LGB_tew`, `HC_GLMM`, `XGBoost`, `PyTorch ResNetV7+SWA`) + Meta-Stacker `TEST-SIM` |
 
-## Deliverable Akhir & Inferensi Tanpa Retraining
-- Seluruh model tersimpan rapi di `ghani/models/` (~320 MB total, tiap file < 35 MB).
-- Inferensi ulang 100% **tanpa melatih ulang** tersedia melalui:
-  - Script standalone: `ghani/src/infer_v6.py`
-  - Notebook akhir kompetisi: `ghani/notebooks/final_datavidia_task1_ghani.ipynb`
-- Dua kandidat final untuk Private LB:
-  1. `submissions/submission_v6_ensemble_ghani.csv` (utama — CV Macro F1 `0.62561`)
-  2. `submissions/submission_v5_ghani.csv` (cadangan paling stabil/sederhana — CV Macro F1 `0.61911`)
+---
+
+## Rincian Komponen di Dalam `v7` (5-Fold `GroupKFold(customer_id)` — 100% Bebas Kebocoran)
+
+| Komponen Model `v7` | Keluarga | OOF LogLoss | `TEST-SIM LogLoss` | `GroupKFold F1` | **`TEST-SIM Macro F1`** |
+|---|---|---|---|---|---|
+| `v7_TabularResNetV7` *(320×3 SiLU + Top-3 SWA)* | PyTorch NN | `0.78869` | `0.79935` | `0.62267` | `0.62251` |
+| `v7_LGB_tew` *(sqrt test-regime weighted)* | LightGBM | `0.78818` | `0.80036` | `0.62435` | `0.62234` |
+| `v7_LGB_unw` *(unweighted)* | LightGBM | `0.78505` | `0.79585` | `0.62582` | `0.62499` |
+| `v7_XGBoost` *(hist depth=7)* | XGBoost | `0.78350` | `0.79438` | `0.62663` | `0.62559` |
+| `v7_LGB + HC_GLMM` *(Hub + Hub×Peak + Courier)* | GBDT + Bayes | `0.78296` | `0.79478` | `0.62689` | `0.62567` |
+| **`v7 FINAL (L2 Meta-Stacker + Multipliers)`** | **Super-Ensemble** | **`0.77551`** | **`0.78652`** | **`0.62949`** | **`0.62866`** |
+
+---
+
+## Struktur Folder Per-Versi (`ghani/`)
+
+```text
+ghani/
+├── src/
+│   ├── common/     # glmm_lib.py, verify_submission.py, verify_shift.py, estimate_lb.py
+│   ├── v1/         # baseline_lgbm.py
+│   ├── v2/         # features_v2.py, train_v2.py
+│   ├── v3/         # run_v3.py
+│   ├── v4/         # run_v4.py
+│   ├── v5/         # build_features_v5.py, run_stage1_glmm.py
+│   ├── v6/         # build_stage2_glmm.py, stage2_common.py, train_stage2_*.py, ensemble_final.py, infer_v6.py
+│   └── v7/         # build_features_v7.py, train_v7_{lgb,xgb,nn}.py, ensemble_v7.py, infer_v7.py, build_final_notebook_v7.py
+├── models/
+│   ├── v1/ .. v4/  # lgbm_v1..4.txt + meta_v1..4.json
+│   ├── v5/         # stage1/lgb_f0..4.txt + meta_v5_glmm.json
+│   ├── v6/         # glmm_state_full.npy, lgb_res/, lgb_full/, xgb/, nn/, nn2/, meta_stacker.joblib
+│   └── v7/         # feature_spec_v7.json, lgb_unw/, lgb_tew/, glmm_hc_full.npy, xgb/, nn/, meta_stacker_v7.joblib, meta_v7_ensemble.json
+├── cache/
+│   └── v1/ .. v7/  # Cache fitur & OOF logits terpisah rapi per versi
+├── notebooks/
+│   ├── v6/         # datavidia_task1_v6_ghani.ipynb
+│   └── v7/         # final_datavidia_task1_v7_ghani.ipynb (Notebook deliverable utama — zero-retraining verified!)
+└── results/
+    └── LOG.md      # Dokumen ini
+```
