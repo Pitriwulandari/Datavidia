@@ -71,7 +71,7 @@ def main():
     n_te = te["cu_sp_n"].to_numpy(dtype=np.float32)
     sim_w, _ = compute_test_sim_weights(n_tr, n_te, tr["is_peak_month"].to_numpy(), te["is_peak_month"].to_numpy())
 
-    feats = get_v7_feature_cols(tr)
+    feats = [c for c in get_v7_feature_cols(tr) if c != "cu_loo_n"]
     cat_cols = [c for c in feats if str(tr[c].dtype) == "category"]
     Xtr_all, Xte_all, _, cb_spec = build_cb_matrix(tr, te, feats, cat_cols)
     del tr, te

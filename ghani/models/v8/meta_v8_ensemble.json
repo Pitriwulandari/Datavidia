@@ -1,0 +1,76 @@
+{
+  "models": [
+    "LGB_unw",
+    "LGB_tew",
+    "HC_GLMM",
+    "XGBoost",
+    "ResNetV7"
+  ],
+  "prob_weights": {
+    "LGB_unw": 0.00037,
+    "LGB_tew": 0.0,
+    "HC_GLMM": 0.40739,
+    "XGBoost": 0.20825,
+    "ResNetV7": 0.38398
+  },
+  "alpha_cust": 0.55,
+  "cls_safety_vec": [
+    0.2750000059604645,
+    0.16500000655651093,
+    0.550000011920929,
+    0.4675000309944153,
+    0.30250000953674316,
+    0.19249999523162842,
+    0.2200000137090683
+  ],
+  "use_nonlinear_eum": true,
+  "eum_w": [
+    1.0979768409848767,
+    1.3632171228850831,
+    0.7980886086455993,
+    0.7175675257392463,
+    1.2439730257248047,
+    1.2161337809844428,
+    0.770588153041565
+  ],
+  "eum_gamma": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.03,
+    1.0
+  ],
+  "eum_bias": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "classes": [
+    "gagal_antar_awal",
+    "klaim_hilang",
+    "konfirmasi_alamat",
+    "normal",
+    "retur_pengirim",
+    "rusak_perjalanan",
+    "tertunda_operasional"
+  ],
+  "oof_ll": 0.7582688784673338,
+  "adv_sim_ll": 0.7685932591325695,
+  "all_f1": 0.6385230380483825,
+  "adv_sim_f1": 0.6384026297785861,
+  "test_distribution": {
+    "normal": 0.3829,
+    "konfirmasi_alamat": 0.2074,
+    "tertunda_operasional": 0.1554,
+    "gagal_antar_awal": 0.1024,
+    "retur_pengirim": 0.0715,
+    "rusak_perjalanan": 0.051,
+    "klaim_hilang": 0.0294
+  }
+}

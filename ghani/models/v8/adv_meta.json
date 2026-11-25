@@ -1,0 +1,26 @@
+{
+  "adv_oof_auc": 0.9146826080675282,
+  "top_shift_features": {
+    "cu_sp_n": 26.69,
+    "cu_loo_n": 21.47,
+    "cu_sp_log_n": 15.8,
+    "cu_sp_inv_n": 5.29,
+    "cu_loo_has_catatan": 1.74,
+    "co_p_scan_q_mean": 1.67,
+    "cu_loo_inv_days_max": 1.6,
+    "shp_vs_co_scan_q_sp": 1.55,
+    "cu_loo_jumlah_catatan": 1.44,
+    "scan_q_mean": 1.35,
+    "cu_sp_loo_scan_q_pct_1": 1.2,
+    "cu_sp_loo_scan_pct_upaya": 1.06
+  },
+  "best_cust_lam": [
+    5.6,
+    17.5,
+    0.77,
+    1.54,
+    0.595,
+    9.799999999999999,
+    7.0
+  ]
+}

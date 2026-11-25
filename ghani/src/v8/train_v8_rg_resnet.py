@@ -140,7 +140,7 @@ def main():
     r_tr_all = split_pct_ranks(tr)
     r_te_all = split_pct_ranks(te)
 
-    feats = get_v7_feature_cols(tr)
+    feats = [c for c in get_v7_feature_cols(tr) if c != "cu_loo_n"]
     cat_cols = [c for c in feats if str(tr[c].dtype) == "category"]
     num_cols = [c for c in feats if c not in cat_cols]
     tr.drop(columns=[c for c in tr.columns if c not in feats], inplace=True)
