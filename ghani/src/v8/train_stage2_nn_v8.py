@@ -205,8 +205,8 @@ def run_nn_family(kind, tr_base, te_base, y, folds, K, n_cust_all, cat_cols):
 
     oof_logits = np.zeros((len(y), K), dtype=np.float32)
     te_logits = np.zeros((len(te_base), K), dtype=np.float32)
-    batch_size = 6144
-    epochs = 8
+    batch_size = 8192
+    epochs = 6
     seed_base = 42 if kind == "nn" else 777
     fname = "resnet" if kind == "nn" else "rg_resnet"
 
@@ -243,7 +243,7 @@ def run_nn_family(kind, tr_base, te_base, y, folds, K, n_cust_all, cat_cols):
             model = RankGaussResNetV8(Xtr.shape[1], n_classes=K, hidden=256, n_blocks=2, dropout=0.20)
             wd = 3e-3
 
-        opt = torch.optim.AdamW(model.parameters(), lr=2.0e-3, weight_decay=wd)
+        opt = torch.optim.AdamW(model.parameters(), lr=2.4e-3, weight_decay=wd)
         sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs, eta_min=1e-5)
         crit = nn.CrossEntropyLoss()
 
