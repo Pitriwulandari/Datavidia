@@ -134,7 +134,7 @@ jupyter notebook ghani/notebooks/
 | `v5` | Feature Eng v5 + Stage-1 LGB + Joint GLMM | `0.61911` | - | - | 5-Fold Stratified CV |
 | `v6` | Stage-2 Super-Ensemble 6 model + Joint GLMM | `0.62561` | `0.60163` | - | Ensemble penuh sebelum pembersihan polusi test |
 | `v7` | Pure Within-Split (`cu_sp_*`) tanpa memori `train` | `0.62949` | `0.48847` | - | Bukti empiris bahwa sinyal customer berasal dari `train` |
-| **`v8`** | **Pure Train-Only `cu_tr_*` + Scale-Normalized GLMM + 6-Family Super-Ensemble** | **`0.62912`** | *(siap submit)* | - | **Kandidat final utama (0% polusi test, 0% scale shift)** |
+| **`v8`** | **Pure Train-Only `cu_tr_*` + Scale-Normalized GLMM + 6-Family Super-Ensemble** | **`0.62912`** | **`0.60757`** (#16 / 213) | *(menunggu rilis)* | **Submission final terpilih (0% polusi test, 0% scale shift)** |
 
 ---
 
