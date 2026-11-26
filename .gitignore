@@ -1,6 +1,5 @@
 # ============================================================
 # DATA KOMPETISI (DILARANG DIBAGIKAN/DIPUBLIKASIKAN - lihat rules)
-# ============================================================
 Task-1-Datavidia-11.0/
 task-1-datavidia-11-0*
 Task-2-Datavidia-11.0/
@@ -34,7 +33,6 @@ kaggle.json
 !.env.example
 *.pem
 *.key
-
 # Model & artefak berat
 # (file model final untuk dikumpulkan: tambahkan manual dengan `git add -f`
 #  atau simpan di luar repo, jika ukurannya kecil)
@@ -53,7 +51,6 @@ kaggle.json
 *.ubj
 *.safetensors
 *.ckpt
-
 # Log & tracking eksperimen
 catboost_info/
 lightning_logs/
@@ -62,7 +59,6 @@ wandb/
 runs/
 optuna*.db
 *.log
-
 # Python
 __pycache__/
 *.py[cod]
@@ -80,34 +76,29 @@ wheels/
 .ruff_cache/
 .coverage
 htmlcov/
-
 # Virtual environments
 venv/
 .venv/
 env/
 ENV/
-
 # Jupyter
 .ipynb_checkpoints/
 */.ipynb_checkpoints/*
-
 # IDE / editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
 # OS
 .DS_Store
 Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
-
 # Cache fitur & paket lokal model berat
 ghani/task1/cache/
 ghani/task1/models/
 ghani/task1/pengumpulan_panitia/models_v8/
 ghani/task2/cache/
 ghani/task2/models/
-
+# Cache fitur
