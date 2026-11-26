@@ -19,8 +19,9 @@ def extract_all():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Loading DINOv2 vits14 on {device}...')
     
-    # Load model from torch hub
-    model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vits14')
+    # Load model from local torch hub cache
+    hub_dir = Path(torch.hub.get_dir()) / 'facebookresearch_dinov2_main'
+    model = torch.hub.load(str(hub_dir), 'dinov2_vits14', source='local')
     model.to(device)
     model.eval()
     
@@ -33,7 +34,7 @@ def extract_all():
     print(f'Found {len(sample_ids)} samples in sample_submission.csv')
     
     transform = transforms.Compose([
-        transforms.Resize((224, 224), interpolation=transforms.InterpolationMode.BICUBIC),
+        transforms.Resize((224, 224), interpolation=transforms.InterpolationMode.BILINEAR),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
