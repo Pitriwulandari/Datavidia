@@ -33,22 +33,22 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 ```text
 datavidia/
 ├── docs/                           # Dokumentasi & catatan kompetisi
-│   ├── TASK-1.md                   # Pengumuman, link Kaggle, kontak panitia
-│   └── INFO-KOMPETISI.md           # Overview, data, leaderboard, aturan lengkap
+│   ├── TASK-1.md                   # Ringkasan & tautan Task-1
+│   ├── TASK-2.md                   # Ringkasan, aturan & spesifikasi Task-2 (World Phenomena)
+│   └── INFO-KOMPETISI.md           # Overview, data, leaderboard, aturan lengkap Task-1
 ├── pitri/                          # Workspace pribadi Pitri
 │   ├── notebooks/
 │   └── results/
 ├── farhat/                         # Workspace pribadi Farhat
 │   └── notebooks/
-├── ghani/                          # Workspace pribadi Ghani (terorganisasi rapi per versi v1..v8)
-│   ├── src/                        # common/ + v1/ s/d v8/ (kode fitur, training, ensemble, inferensi)
-│   ├── models/                     # v1/ s/d v8/ (file bobot model & metadata zero-retraining)
-│   ├── cache/                      # v1/ s/d v8/ (cache fitur & OOF logits - di-ignore git)
-│   ├── notebooks/                  # v6/, v7/, & v8/final_datavidia_task1_v8_ghani.ipynb
-│   └── results/LOG.md              # Riwayat lengkap eksperimen v1 s/d v8 & skor
-├── submissions/                    # submission_v1_ghani.csv s/d submission_v8_ghani.csv (di-ignore git)
+├── ghani/                          # Workspace pribadi Ghani (simetris per task & per versi)
+│   ├── task1/                      # src/, models/, cache/, notebooks/, results/LOG.md (v1..v8)
+│   ├── task2/                      # src/, models/, cache/, notebooks/, results/LOG.md (v1..)
+│   └── README.md
+├── submissions/                    # task1/ & task2/ (file CSV submission - di-ignore git)
 ├── data/archive/                   # Zip asli dari Kaggle (di-ignore git)
-├── Task-1-Datavidia-11.0/          # Data hasil ekstrak (train/, test/) - di-ignore git
+├── Task-1-Datavidia-11.0/          # Data hasil ekstrak Task-1 - di-ignore git
+├── Task-2-Datavidia-11.0/          # Data hasil ekstrak Task-2 - di-ignore git
 ├── requirements.txt
 ├── .gitignore
 └── README.md

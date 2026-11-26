@@ -1,31 +1,36 @@
-# 📂 Workspace - Ghani
+# 📂 Workspace - Ghani (`task1/` & `task2/`)
 
-Folder kerja pribadi **Ghani**. Semua kode, model, cache, dan catatan hasil buatan Ghani/agen ada di sini supaya root tetap bersih dan jelas pembuatnya.
+Folder kerja pribadi **Ghani** yang dipisahkan secara simetris dan rapi per babak/tugas kompetisi (**Task-1** & **Task-2**) serta per versi eksperimen (`v1`, `v2`, ...).
 
 ```text
 ghani/
-├── src/        # Skrip pipeline (jalankan dari ROOT repo, bukan dari dalam ghani/)
-│   ├── baseline_lgbm.py   # v1: agregasi 9 tabel + LightGBM
-│   ├── features_v2.py     # fitur urutan scan -> cache fitur
-│   └── train_v2.py        # target encoding + LightGBM + tuning bobot kelas
-├── models/     # lgbm_v*.txt, meta_v*.json (di-ignore git)
-├── cache/      # features_*.pkl, probabilitas, importance (di-ignore git)
-├── notebooks/  # Notebook eksperimen
-└── results/    # LOG.md (riwayat eksperimen), screenshot, catatan
+├── task1/                        # 📦 Task-1: Shipment Logistic Dataset (7-class Macro F1 — LB Public: 0.60757 #16/213)
+│   ├── src/                      # common/ + v1/ s/d v8/ (skrip fitur, training, ensemble, zero-retrain inference)
+│   ├── models/                   # v1/ s/d v8/ (bobot model, tabel lookup entitas & metadata zero-retraining)
+│   ├── cache/                    # v1/ s/d v8/ (cache fitur & OOF logits - di-ignore git)
+│   ├── notebooks/                # v6/, v7/, & v8/final_datavidia_task1_v8_ghani.ipynb
+│   └── results/LOG.md            # Catatan lengkap eksperimen v1 s/d v8 & skor
+│
+├── task2/                        # 🌍 Task-2: World Phenomena (3.180 pasang citra pre/post, 6-class Macro F1)
+│   ├── src/                      # common/ + v1/ .. (skrip ekstraksi fitur visi murni, klasterisasi, self-training, inferensi)
+│   ├── models/                   # v1/ .. (checkpoint model & artefak zero-retraining)
+│   ├── cache/                    # v1/ .. (cache embedding citra & fitur perubahan - di-ignore git)
+│   ├── notebooks/                # v1/ .. (notebook deliverable siap jalankan tanpa training ulang)
+│   └── results/LOG.md            # Catatan lengkap eksperimen Task-2 per versi
+│
+└── README.md                     # Dokumen ini
 ```
 
-## Cara menjalankan (dari root repo)
-```bash
-python ghani/src/features_v2.py train
-python ghani/src/features_v2.py test
-TAG=v5 python ghani/src/train_v2.py        # PowerShell: $env:TAG='v5'; python ghani/src/train_v2.py
-```
+## File Submission Bersama (`submissions/`)
+- **Task-1:** `submissions/task1/submission_v1_ghani.csv` s/d `submissions/task1/submission_v8_ghani.csv`
+- **Task-2:** `submissions/task2/submission_v{n}_ghani.csv`
 
-## Konvensi penamaan
-- **Submission** (folder bersama `submissions/`): `submission_v{n}_ghani.csv`, n = urutan eksperimen Ghani.
-- **Model & cache**: `lgbm_v{n}.txt`, `meta_v{n}.json`, `proba_v{n}_*.npy` memakai nomor `n` yang sama dengan submission.
-- Setiap eksperimen baru dicatat di [results/LOG.md](results/LOG.md).
-
-## Aturan
-- Jangan commit data, model, cache, atau submission (sudah di-ignore).
-- Notebook final untuk panitia (pemrosesan data, fitur, training, inferensi tanpa training ulang) disusun di `notebooks/` folder ini dan menyertakan file model dari `models/`.
+## Cara Menjalankan Inferensi Tanpa Melatih Ulang (*Zero-Retraining*, dari Root Repo)
+- **Task-1 (`v8` Final):**
+  ```bash
+  python -u -W ignore ghani/task1/src/v8/infer_v8.py
+  ```
+- **Task-2 (unduh/ekstrak data awal):**
+  ```bash
+  python ghani/task2/src/common/download_task2.py
+  ```
