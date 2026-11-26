@@ -95,7 +95,13 @@ $$F1_k = 2 \cdot \frac{precision_k \cdot recall_k}{precision_k + recall_k}, \qqu
 1. **Larangan Manual / Hand-Labeling:** Prediksi wajib dihasilkan oleh kode/model otomatis. Dilarang melabeli manual sampel uji.
 2. **Larangan Probing Leaderboard:** Dilarang melakukan probing sistematis untuk merekonstruksi ground truth.
 3. **Larangan LLM / Generative AI:** Prediksi tidak boleh dihasilkan oleh prompt generative AI / LLM teks.
-4. **Deliverable Akhir:** Wajib mengumpulkan notebook yang reproducible dan bisa menjalankan inferensi tanpa train ulang (*zero-retraining inference*).
+4. **Deliverable Akhir (Mengikuti Protokol Resmi Pengumpulan Panitia):**
+   - **Model hasil train:** Dikumpulkan dalam format artefak model tersimpan (`.pt`, `.onnx`, `.keras`, `.joblib`, dll.).
+   - **Maksimal 2 Notebook:** Notebook *prediksi/submission* dan Notebook *pelatihan/model* (jika terpisah).
+   - **Wajib *Zero-Retraining Inference*:** Notebook submission harus bisa dijalankan dari awal sampai menghasilkan file submission **tanpa melatih ulang** menggunakan bobot model yang dikumpulkan (penalti: **nilai 0** jika gagal).
+   - **Wajib *Reproducible*:** Hasil pelatihan harus dapat direproduksi ulang dengan seed deterministik (penalti: **nilai 0** jika tidak reproducible).
+   - **Bobot *Pretrained* Publik:** Khusus visi murni tanpa prompt teks/VLM sesuai FAQ Task-2 no. 2; wajib mencantumkan sumber, versi, lisensi, dan modifikasinya di notebook.
+   - *Catatan Workflow Tim:* Selama iterasi eksperimen (`v3`, `v4`, ...), **tunda pembuatan 2 notebook pengumpulan panitia yang rapi** sampai versi terbaik terpilih berdasarkan skor Leaderboard — cukup jaga `SEED = 42`, simpan bobot/normalizer di `ghani/task2/models/v{n}/`, dan catat metadata bobot *pretrained*.
 
 ### B. Catatan & Strategi Teknis Internal Tim (Kenapa kita pakai DINOv2?):
 - **Pertanyaan:** *Apakah panitia di web Kaggle menyebut nama "DINOv2 (ViT-S/14)"?*
