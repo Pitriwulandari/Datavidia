@@ -114,7 +114,8 @@ def run_louvain_sweep(X: np.ndarray, both_gray: np.ndarray, any_rot: np.ndarray)
     best_score = -1.0
     results = {}
     for res in [0.8, 1.0, 1.2, 1.5, 1.8]:
-        part = g.community_multilevel(weights=weights, resolution=res, seed=SEED)
+        random.seed(SEED)
+        part = g.community_multilevel(weights=weights, resolution=res)
         lab = np.array(part.membership, dtype=int)
         comms = sorted([c for c in range(len(part)) if (lab == c).sum() >= 20], key=lambda c: -(lab == c).sum())
         max_gray = max([float(both_gray[lab == c].mean()) for c in comms]) if comms else 1.0
