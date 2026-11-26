@@ -1,0 +1,10 @@
+{
+  "stage1_oof_macro_f1": 0.589473,
+  "stage2_same_oof_macro_f1": 0.605382,
+  "stage2_crossfit_macro_f1": 0.591851,
+  "ensemble_weight_stage1": 0.0,
+  "n_features": 190,
+  "n_classes": 7,
+  "n_train": 1243617,
+  "n_test": 362245
+}
