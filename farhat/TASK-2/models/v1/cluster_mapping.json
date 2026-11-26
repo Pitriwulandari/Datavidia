@@ -1,0 +1,19 @@
+{
+  "notes": "Pemetaan klaster -> kelas BERDASARKAN PROFIL STATISTIK + MONTASE VISUAL (cluster_atlas.jpg, cluster_*_prototypes.jpg). TIDAK ada ground truth, TIDAK diverifikasi, dan TIDAK boleh digunakan sebagai klaim akurasi. Digunakan hanya untuk dokumentasi interpretatif di notebook. Submission akhir dihasilkan oleh probe (LR + kNN) pada pseudo-label, bukan langsung dari mapping ini.",
+  "cluster_to_class": {
+    "0": "Earthquake",
+    "1": "Hurricane",
+    "2": "Tsunami",
+    "3": "Volcano",
+    "4": "Explosion",
+    "5": "Fire"
+  },
+  "evidence": {
+    "0": "Perubahan tekstur ringan, sedikit gelap (gray_delta +0.008, edge_delta -0.007) — konsisten dengan keruntuhan tekstur tanpa pergeseran warna besar (bangunannya runtuh tapi lokasi sama).",
+    "1": "Cahaya naik ringan (val_delta +0.02, sat_delta -0.01) — awan/hujan lebat meredam kontras, cocok dengan badai.",
+    "2": "Perubahan paling ringan di semua klaster (diff_abs 0.182, val_delta ~0, sat_delta ~0) — air pasang tidak mengubah tekstur daratan banyak, cocok dengan tsunami.",
+    "3": "Perubahan terbesar (diff_abs 0.235), lebih gelap (dark_delta +0.057), lebih banyak tepi (edge_delta +0.010) — material vulkanik abu-abu/gelap dan lapisan baru, cocok dengan gunung meletus.",
+    "4": "Gelap drastis (dark_delta -0.124) dengan cahaya naik (val_delta +0.065) — ledakan membuat area hitam serta cahuan api, cocok dengan explosion.",
+    "5": "Perubahan besar (diff_abs 0.238), gelap (dark_delta -0.038), tepi berkurang (edge_delta -0.016) — lahan bakar luas menghilangkan tekstur vegetasi, cocok dengan kebakaran hutan."
+  }
+}

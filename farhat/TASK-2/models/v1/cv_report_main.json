@@ -1,0 +1,7 @@
+{
+  "cv_folds": 5,
+  "macro_f1_vs_pseudo_labels": 0.9080177204386691,
+  "accuracy_vs_pseudo_labels": 0.9018867924528302,
+  "logistic_macro_f1": 0.9033961934229355,
+  "knn_macro_f1": 0.8323821331608968
+}
