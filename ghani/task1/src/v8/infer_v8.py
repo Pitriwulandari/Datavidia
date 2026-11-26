@@ -88,7 +88,8 @@ def build_test_from_raw_and_lookups(spec):
 
     te = pd.concat([te, hu_df, co_df], axis=1)
     add_te = add_within_split_courier_and_hubmonth(te)
-    te = pd.concat([te, add_te], axis=1)
+    for col in add_te.columns:
+        te[col] = add_te[col]
     te = te.loc[:, ~te.columns.duplicated()].copy()
 
     # 3. Reconstruct exact `cu_tr_*` 51-col DataFrame from `cu_lut_mat` + test master columns!

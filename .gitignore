@@ -104,7 +104,10 @@ Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
 
-# Cache fitur
+# Cache fitur & paket lokal model berat
 ghani/task1/cache/
+ghani/task1/models/
+ghani/task1/pengumpulan_panitia/models_v8/
 ghani/task2/cache/
+ghani/task2/models/
 
