@@ -1,0 +1,22 @@
+# Environment pipeline final Task-1 (Farhat) — teruji, Python 3.10
+lightgbm==4.7.0
+pandas==2.2.3
+numpy==2.2.6
+scipy==1.15.3
+scikit-learn==1.7.2
+
+# Menjalankan notebook (nbconvert --execute)
+jupyter==1.1.1
+nbformat==5.11.1
+nbconvert==7.17.2
+ipykernel==7.3.0
+
+# Dipakai eksperimen anggota lain; tidak diperlukan untuk menjalankan
+# notebook final Task-1 di farhat/TASK-1/notebooks.
+xgboost>=3.2.0
+catboost>=1.2.10
+torch>=2.8.0
+joblib>=1.5.0
+matplotlib>=3.8
+seaborn>=0.13
+

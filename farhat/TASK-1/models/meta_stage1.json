@@ -1,0 +1,25 @@
+{
+  "classes": [
+    "gagal_antar_awal",
+    "klaim_hilang",
+    "konfirmasi_alamat",
+    "normal",
+    "retur_pengirim",
+    "rusak_perjalanan",
+    "tertunda_operasional"
+  ],
+  "oof_logloss": 0.8238579027515964,
+  "oof_argmax_f1": 0.5894732133199524,
+  "cv_tuned_f1": 0.6022480080543458,
+  "class_multipliers": [
+    1.2203267744494943,
+    1.4708915265350948,
+    0.7743543323584737,
+    0.7309526429269199,
+    1.3624423987475698,
+    1.3818087044749643,
+    0.774993564434464
+  ],
+  "n_folds": 5,
+  "recovered_from": "models/lgb_f0..f4.txt"
+}
