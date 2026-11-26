@@ -7,6 +7,6 @@
 
 ## Ringkasan Progresi Versi (`v1` → ...)
 
-| Versi | Folder Kode | Folder Model | File Submission | Skor Validasi Internal | LB Public | Ringkasan Pendekatan |
+| Versi | Folder Kode | Folder Model | File Submission | Distribusi Prediksi | LB Public | Ringkasan Pendekatan |
 |---|---|---|---|---|---|---|
-| **v1** | [src/v1/](../src/v1/) | [models/v1/](../models/v1/) | `submissions/task2/submission_v1_ghani.csv` | *(menunggu dataset)* | - | Baseline awal Pure-Vision Bi-Temporal Change + Physical Spectral Signatures |
+| **v1** | [src/v1/](../src/v1/) | [cache/v1/](../cache/v1/) | `submissions/task2/submission_v1_ghani.csv` | EQ 20.3%, Fire 17.7%, Volc 17.8%, Expl 17.6%, Tsun 15.9%, Hurr 10.7% | *(siap disubmit)* | **Pure-Vision Bi-Temporal Physical Spectral Change Signatures:** Ekstraksi fitur perubahan spektral (ExG drop, Burn scar charcoal index, Ash desaturation, NDWI water inundation, Radial blast concentration, Edge destruction). |
