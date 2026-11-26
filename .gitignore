@@ -3,6 +3,9 @@
 # ============================================================
 Task-1-Datavidia-11.0/
 task-1-datavidia-11-0*
+Task-2-Datavidia-11.0/
+task-2-datavidia-11-0*
+Fenomena/
 data/
 *.csv
 *.tsv
@@ -103,4 +106,5 @@ $RECYCLE.BIN/
 
 # Cache fitur
 ghani/cache/
+ghani/task2/cache/
 
