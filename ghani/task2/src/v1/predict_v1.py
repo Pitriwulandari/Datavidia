@@ -141,5 +141,5 @@ def classify_samples(csv_path: Path, output_csv: Path):
 
 if __name__ == '__main__':
     csv_in = Path('ghani/task2/cache/v1/physical_features.csv')
-    csv_out = Path('submissions/task2/submission_v1_ghani.csv')
+    csv_out = Path('ghani/submissions/task2/submission_v1_ghani.csv')
     classify_samples(csv_in, csv_out)

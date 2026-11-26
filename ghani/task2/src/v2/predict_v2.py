@@ -15,7 +15,7 @@ def generate_v2_submission():
     t0 = time.time()
     cache_v2 = Path('ghani/task2/cache/v2')
     cache_v1 = Path('ghani/task2/cache/v1')
-    out_csv = Path('submissions/task2/submission_v2_ghani.csv')
+    out_csv = Path('ghani/submissions/task2/submission_v2_ghani.csv')
     
     # 1. Load DINOv2 Features
     feats_pre = np.load(cache_v2 / 'feats_pre.npy') # (3180, 384)

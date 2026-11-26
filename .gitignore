@@ -101,4 +101,7 @@ ghani/task1/models/
 ghani/task1/pengumpulan_panitia/models_v8/
 ghani/task2/cache/
 ghani/task2/models/
-# Cache fitur
+
+# Catatan pribadi & aturan model Antigravity lokal (tidak di-push ke repo tim)
+GEMINI.md
+ghani/CATATAN-MODEL-AGENT.md

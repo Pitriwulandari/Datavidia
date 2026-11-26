@@ -18,12 +18,13 @@ ghani/
 │   ├── notebooks/                # v1/ .. (notebook deliverable siap jalankan tanpa training ulang)
 │   └── results/LOG.md            # Catatan lengkap eksperimen Task-2 per versi
 │
+├── submissions/                  # 📂 File Submission Pribadi Ghani (task1/ & task2/ - CSV di-ignore git)
 └── README.md                     # Dokumen ini
 ```
 
-## File Submission Bersama (`submissions/`)
-- **Task-1:** `submissions/task1/submission_v1_ghani.csv` s/d `submissions/task1/submission_v8_ghani.csv`
-- **Task-2:** `submissions/task2/submission_v{n}_ghani.csv`
+## File Submission (`ghani/submissions/`)
+- **Task-1:** `ghani/submissions/task1/submission_v1_ghani.csv` s/d `ghani/submissions/task1/submission_v8_ghani.csv`
+- **Task-2:** `ghani/submissions/task2/submission_v{n}_ghani.csv`
 
 ## Cara Menjalankan Inferensi Tanpa Melatih Ulang (*Zero-Retraining*, dari Root Repo)
 - **Task-1 (`v8` Final):**

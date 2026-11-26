@@ -44,8 +44,8 @@ datavidia/
 ├── ghani/                          # Workspace pribadi Ghani (simetris per task & per versi)
 │   ├── task1/                      # src/, models/, cache/, notebooks/, results/LOG.md (v1..v8)
 │   ├── task2/                      # src/, models/, cache/, notebooks/, results/LOG.md (v1..)
+│   ├── submissions/                # task1/ & task2/ (file CSV submission pribadi Ghani - di-ignore git)
 │   └── README.md
-├── submissions/                    # task1/ & task2/ (file CSV submission - di-ignore git)
 ├── data/archive/                   # Zip asli dari Kaggle (di-ignore git)
 ├── Task-1-Datavidia-11.0/          # Data hasil ekstrak Task-1 - di-ignore git
 ├── Task-2-Datavidia-11.0/          # Data hasil ekstrak Task-2 - di-ignore git
@@ -56,7 +56,7 @@ datavidia/
 
 > **Catatan:** `Task-1-Datavidia-11.0/` masih di root karena path-nya dipakai skrip di `ghani/src/`. Setelah pipeline stabil, bisa dipindah ke `data/raw/` dengan mengubah `ROOT` di `ghani/src/baseline_lgbm.py`.
 
-**Penamaan submission:** `submissions/submission_v{n}_{nama}.csv` (contoh: `submission_v1_ghani.csv`). Nomor n = urutan eksperimen orang tersebut, dicatat di `{nama}/results/LOG.md`.
+**Penamaan submission:** `{nama}/submissions/task{1|2}/submission_v{n}_{nama}.csv` (contoh: `ghani/submissions/task2/submission_v1_ghani.csv`). Nomor n = urutan eksperimen orang tersebut, dicatat di `{nama}/results/LOG.md`.
 
 **Aturan kerja:** eksperimen pribadi di folder masing-masing; notebook final untuk dikumpulkan ke panitia disiapkan dari folder anggota yang skornya terbaik. Dataset, model, dan submission tidak di-commit.
 
