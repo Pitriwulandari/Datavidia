@@ -1,0 +1,51 @@
+{
+  "mode": "hybrid_prob_stacker",
+  "models": [
+    "GLMM",
+    "LGB_res",
+    "LGB_full",
+    "XGBoost",
+    "ResNet",
+    "RGResNet"
+  ],
+  "blend_info": {
+    "prob_weights": {
+      "GLMM": 0.062146,
+      "LGB_res": 0.320931,
+      "LGB_full": 0.209437,
+      "XGBoost": 0.007561,
+      "ResNet": 0.373699,
+      "RGResNet": 0.026226
+    },
+    "meta_C": 0.05
+  },
+  "classes": [
+    "gagal_antar_awal",
+    "klaim_hilang",
+    "konfirmasi_alamat",
+    "normal",
+    "retur_pengirim",
+    "rusak_perjalanan",
+    "tertunda_operasional"
+  ],
+  "class_multipliers": [
+    1.1587661020716076,
+    1.4050332496743072,
+    0.7864632878086878,
+    0.6783318706020091,
+    1.1963185886760013,
+    1.271315287937908,
+    0.7570016371440413
+  ],
+  "oof_ll": 0.7785481421082154,
+  "cv_macro_f1": 0.6291178314909561,
+  "test_distribution": {
+    "normal": 0.3764,
+    "konfirmasi_alamat": 0.216,
+    "tertunda_operasional": 0.152,
+    "gagal_antar_awal": 0.1007,
+    "retur_pengirim": 0.0712,
+    "rusak_perjalanan": 0.0526,
+    "klaim_hilang": 0.031
+  }
+}
