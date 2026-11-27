@@ -142,7 +142,8 @@ jupyter notebook ghani/notebooks/
 |---|---|---|---|---|
 | `v1` | Ghani | Pure-Vision Physical Spectral Change Signatures | `0.11158` | Baseline awal fitur perubahan fisik |
 | `v1` | Farhat | DINOv2 ViT-S/14 (`timm`) + K-Means (`k=6`) + Probe + Sinkhorn | `0.14510` | Eksperimen awal Farhat |
-| **`v3`** | **Ghani** | **Cloud-Adaptive Multi-Backbone Event-Graph + 5-Fold 3-Family Ensemble** | **`0.37895`** (#26) | **De-augmentasi rotasi/grayscale/tint/awan + Louvain + MLP/LR/kNN** |
+| **`v3`** | **Ghani** | **Cloud-Adaptive Multi-Backbone Event-Graph + 5-Fold 3-Family Ensemble** | **`0.37895`** | **De-augmentasi rotasi/grayscale/tint/awan + Louvain + MLP/LR/kNN** |
+| `v4` | Ghani | 4-DOF Rigid Spatial Alignment + Aligned Gray-CLAHE DiD + 4-Family Ensemble | `0.37878` | Stagnan vs `v3`; audit sampel acak mengungkap *Gray-CLAHE* membuang sinyal warna bencana |
 
 ---
 
