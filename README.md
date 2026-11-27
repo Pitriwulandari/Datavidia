@@ -10,7 +10,7 @@ Repository ini berisi kode sumber, analisis data, eksperimen pemodelan *Machine 
 |---|---|---|---|
 | 1 | **Pitri Wulandari** | Data Preprocessing & Modeling | [@Pitriwulandari](https://github.com/Pitriwulandari) |
 | 2 | **Farhat** | Exploratory Data Analysis (EDA) & Feature Engineering | - |
-| 3 | **Ghani** | Model Evaluation, Hyperparameter Tuning & Pipeline | - |
+| 3 | **Habib Abdul Ghani** | End-to-End ML Pipeline, Feature Engineering, Multi-Model Ensemble, Validation Audit & Zero-Retraining Packaging (Task-1 & Task-2) | [@Kaga-nim](https://github.com/Kaga-nim) |
 
 *(Catatan: Anda dapat menyesuaikan peran spesifik masing-masing anggota di atas sesuai pembagian tugas tim.)*
 
@@ -67,7 +67,7 @@ datavidia/
 - **Bahasa Pemrograman:** Python 3.9+
 - **Data Manipulation & Analysis:** `pandas`, `numpy`
 - **Visualisasi Data:** `matplotlib`, `seaborn`
-- **Machine Learning:** `scikit-learn`, `xgboost`, `lightgbm`, `catboost`
+- **Machine Learning & Deep Learning:** `scikit-learn`, `xgboost`, `lightgbm`, `catboost`, `PyTorch`, `torchvision`, `OpenCV`, `igraph`
 - **Eksperimen & Notebook:** Jupyter Notebook / Google Colab / VS Code
 
 ---
@@ -125,6 +125,7 @@ jupyter notebook ghani/notebooks/
 
 ## 📈 Eksperimen & Riwayat Skor
 
+### Task-1: Status Penanganan Paket
 | Model ID | Pendekatan / Fitur | CV Macro F1 | Leaderboard Public | Leaderboard Private | Keterangan |
 |---|---|---|---|---|---|
 | `v1` | Baseline LightGBM + agregasi dasar 9 tabel | `0.4941` | `0.47761` | - | Benchmark awal |
@@ -135,6 +136,13 @@ jupyter notebook ghani/notebooks/
 | `v6` | Stage-2 Super-Ensemble 6 model + Joint GLMM | `0.62561` | `0.60163` | - | Ensemble penuh sebelum pembersihan polusi test |
 | `v7` | Pure Within-Split (`cu_sp_*`) tanpa memori `train` | `0.62949` | `0.48847` | - | Bukti empiris bahwa sinyal customer berasal dari `train` |
 | **`v8`** | **Pure Train-Only `cu_tr_*` + Scale-Normalized GLMM + 6-Family Super-Ensemble** | **`0.62912`** | **`0.60757`** (#16 / 213) | *(menunggu rilis)* | **Submission final terpilih (0% polusi test, 0% scale shift)** |
+
+### Task-2: World Phenomena *(Berjalan)*
+| Versi | Anggota | Pendekatan / Fitur | Leaderboard Public | Keterangan |
+|---|---|---|---|---|
+| `v1` | Ghani | Pure-Vision Physical Spectral Change Signatures | `0.11158` | Baseline awal fitur perubahan fisik |
+| `v1` | Farhat | DINOv2 ViT-S/14 (`timm`) + K-Means (`k=6`) + Probe + Sinkhorn | `0.14510` | Eksperimen awal Farhat |
+| **`v3`** | **Ghani** | **Cloud-Adaptive Multi-Backbone Event-Graph + 5-Fold 3-Family Ensemble** | **`0.37895`** (#26) | **De-augmentasi rotasi/grayscale/tint/awan + Louvain + MLP/LR/kNN** |
 
 ---
 
