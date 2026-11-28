@@ -45,8 +45,38 @@ C6_DIR = ROOT / "ghani" / "task2" / "cache" / "v6"
 C7_DIR = ROOT / "ghani" / "task2" / "cache" / "v7"
 
 
-def build_v7_master_matrix(center_state: dict | None = None, sat_weight: float = 1.35):
-    """Build Satellite-Native (SatlasPretrain Aerial_SwinB_SI) + DINOv2 + ConvNeXt + Physics matrix."""
+def cond_center_l2(
+    arr: np.ndarray,
+    gray_mask: np.ndarray,
+    state: tuple[np.ndarray, np.ndarray] | None = None,
+) -> tuple[np.ndarray, tuple[np.ndarray, np.ndarray]]:
+    """L2-norm -> conditional mean-centering by observable grayscale flag -> L2-norm.
+    Algebraically removes RGB-vs-Grayscale domain shift without losing texture signal.
+    """
+    X = l2norm(arr.astype(np.float32))
+    if state is None:
+        mu_c = X[~gray_mask].mean(axis=0, keepdims=True).astype(np.float32)
+        mu_g = X[gray_mask].mean(axis=0, keepdims=True).astype(np.float32)
+        state = (mu_c, mu_g)
+    else:
+        mu_c, mu_g = state
+    out = np.empty_like(X)
+    if gray_mask.any():
+        out[gray_mask] = l2norm(X[gray_mask] - mu_g)
+    if (~gray_mask).any():
+        out[~gray_mask] = l2norm(X[~gray_mask] - mu_c)
+    return out, state
+
+
+def build_v7_master_matrix(
+    center_state: dict | None = None,
+    w_f2: float = 1.50,
+    w_f3: float = 0.50,
+    w_top: float = 0.60,
+):
+    """Build Satellite-Native (SatlasPretrain Aerial_SwinB_SI f2+f3+topchg) + DINOv2 + ConvNeXt
+    + Physics matrix with Grayscale-Conditional Mean-Centering on all RGB views.
+    """
     vb3 = np.load(C3_DIR / "vitb_wb.npz")
     vs3 = np.load(C3_DIR / "vits_gray_rot2.npz")
     cx3 = np.load(C3_DIR / "cnxb_gray.npz")
@@ -62,31 +92,36 @@ def build_v7_master_matrix(center_state: dict | None = None, sat_weight: float =
 
     sat7 = np.load(C7_DIR / "satlas_aerial_swinb.npz")
 
+    audit3 = p3["audit_flags"]
+    g_pre = audit3[:, 2] > 0.5
+    g_pst = audit3[:, 3] > 0.5
+    any_gray = g_pre | g_pst
+
+    # (key, weight, array, gray_mask_or_None)
     raw_views = [
-        # Satellite-Native SatlasPretrain Aerial_SwinB_SI (0.5-2 m/px aerial domain!)
-        ("sat_f3_pre", 1.05 * sat_weight, sat7["f3_pre"]),
-        ("sat_f3_post", 1.30 * sat_weight, sat7["f3_post"]),
-        ("sat_f3_diff", 0.70 * sat_weight, sat7["f3_post"] - sat7["f3_pre"]),
-        ("sat_f2_pre", 0.90 * sat_weight, sat7["f2_pre"]),
-        ("sat_f2_post", 1.15 * sat_weight, sat7["f2_post"]),
-        ("sat_f2_diff", 0.55 * sat_weight, sat7["f2_post"] - sat7["f2_pre"]),
+        # Satellite-Native SatlasPretrain Aerial_SwinB_SI (0.5-2 m/px aerial domain)
+        ("sat_f2_pre",     1.00 * w_f2, sat7["f2_pre"],         g_pre),
+        ("sat_f2_post",    1.30 * w_f2, sat7["f2_post"],        g_pst),
+        ("sat_f3_pre",     1.00 * w_f3, sat7["f3_pre"],         g_pre),
+        ("sat_f3_post",    1.25 * w_f3, sat7["f3_post"],        g_pst),
+        ("sat_f2_topchg",  1.00 * w_top, sat7["f2_topchg_post"], any_gray),
         # DINOv2 + ConvNeXt clean multi-view (from v3+v4+v5)
-        ("vb5_pre", 1.00, vb5["pmean_pre"]),
-        ("vb5_post", 1.35, vb5["pmean_post"]),
-        ("vb5_diff", 0.75, vb5["pmean_post"] - vb5["pmean_pre"]),
-        ("vs4_pre", 1.00, vs4["pmean_pre"]),
-        ("vs4_post", 1.35, vs4["pmean_post"]),
-        ("vb4_pre", 0.90, vb4["pmean_pre"]),
-        ("vb4_post", 1.20, vb4["pmean_post"]),
-        ("vb3_cpre", 0.85, vb3["cls_pre"]),
-        ("vb3_cpost", 1.05, vb3["cls_post"]),
-        ("vb3_ppre", 0.85, vb3["pmean_pre"]),
-        ("vb3_ppost", 1.05, vb3["pmean_post"]),
-        ("vs3_ppre", 0.75, vs3["pmean_pre"]),
-        ("vs3_ppost", 0.95, vs3["pmean_post"]),
-        ("cx3_pre", 0.85, cx3["pre"]),
-        ("cx3_post", 0.95, cx3["post"]),
-        ("cm5", 0.40, cm5["emb"]),
+        ("vb5_pre",   1.00, vb5["pmean_pre"],                        g_pre),
+        ("vb5_post",  1.35, vb5["pmean_post"],                       g_pst),
+        ("vb5_diff",  0.75, vb5["pmean_post"] - vb5["pmean_pre"],    any_gray),
+        ("vs4_pre",   1.00, vs4["pmean_pre"],                        None),
+        ("vs4_post",  1.35, vs4["pmean_post"],                       None),
+        ("vb4_pre",   0.90, vb4["pmean_pre"],                        None),
+        ("vb4_post",  1.20, vb4["pmean_post"],                       None),
+        ("vb3_cpre",  0.85, vb3["cls_pre"],                          g_pre),
+        ("vb3_cpost", 1.05, vb3["cls_post"],                         g_pst),
+        ("vb3_ppre",  0.85, vb3["pmean_pre"],                        g_pre),
+        ("vb3_ppost", 1.05, vb3["pmean_post"],                       g_pst),
+        ("vs3_ppre",  0.75, vs3["pmean_pre"],                        None),
+        ("vs3_ppost", 0.95, vs3["pmean_post"],                       None),
+        ("cx3_pre",   0.85, cx3["pre"],                              None),
+        ("cx3_post",  0.95, cx3["post"],                             None),
+        ("cm5",       0.40, cm5["emb"],                              None),
     ]
 
     pf5 = np.nan_to_num(p5["features"].astype(np.float32), nan=0.0, posinf=0.0, neginf=0.0)
@@ -94,11 +129,16 @@ def build_v7_master_matrix(center_state: dict | None = None, sat_weight: float =
 
     new_state = {} if center_state is None else center_state
     blocks = []
-    for key, wt, arr in raw_views:
-        mv = None if center_state is None else center_state[key]
-        c_arr, mv_out = center_l2(arr, mv)
+    for key, wt, arr, gmask in raw_views:
+        if wt <= 0:
+            continue
+        st = None if center_state is None else center_state[key]
+        if gmask is not None:
+            c_arr, st_out = cond_center_l2(arr, gmask, st)
+        else:
+            c_arr, st_out = center_l2(arr, st)
         if center_state is None:
-            new_state[key] = mv_out
+            new_state[key] = st_out
         blocks.append(wt * c_arr)
 
     if center_state is None:
@@ -159,15 +199,10 @@ def run_benchmark_satlas(sample_ids: list[str], sat7):
         print(f"  {name:30s} | 1NN={f1_score(a_y,p1,average='macro'):.3f} 3NN={f1_score(a_y,p3,average='macro'):.3f} 5NN={f1_score(a_y,p5_p,average='macro'):.3f} | {ps}", flush=True)
 
     print("\n=== HONEST SATLASPRETRAIN SEPARABILITY BENCHMARK (60 Multi-Event Anchors) ===", flush=True)
-    sat_f3 = np.hstack([center_l2(sat7["f3_pre"])[0], 1.2 * center_l2(sat7["f3_post"])[0]])
-    sat_f2 = np.hstack([center_l2(sat7["f2_pre"])[0], 1.2 * center_l2(sat7["f2_post"])[0]])
-    sat_both = np.hstack([sat_f3, 0.85 * sat_f2, 0.6 * center_l2(sat7["f3_post"] - sat7["f3_pre"])[0]])
-    _eval("Satlas Aerial f3 (8x8) only", sat_f3)
-    _eval("Satlas Aerial f2 (16x16) only", sat_f2)
-    _eval("Satlas Aerial f3+f2+diff only", sat_both)
-    for sw in [0.0, 0.8, 1.35, 2.0]:
-        Xm, *_ = build_v7_master_matrix(None, sat_weight=sw)
-        _eval(f"v7 Fused (sat_weight={sw:.2f})", Xm)
+    Xm_v6, *_ = build_v7_master_matrix(None, w_f2=0.0, w_f3=0.0, w_top=0.0)
+    Xm_v7, *_ = build_v7_master_matrix(None, w_f2=1.50, w_f3=0.50, w_top=0.60)
+    _eval("v6 space (gc_all, no satlas)", Xm_v6)
+    _eval("v7 space (f2=1.5,f3=0.5,top=0.6)", Xm_v7)
 
 
 def run_louvain_v7(X: np.ndarray, k_nn: int = 18):
@@ -235,8 +270,12 @@ def main():
     s4 = pd.read_csv(ROOT / "ghani" / "submissions" / "task2" / "submission_v4_ghani.csv").set_index("Id").loc[sample_ids]["Phenomenon"].values
     s6 = pd.read_csv(ROOT / "ghani" / "submissions" / "task2" / "submission_v6_ghani.csv").set_index("Id").loc[sample_ids]["Phenomenon"].values
 
-    X_master, _, p5, ap4, p3, sat7 = build_v7_master_matrix(None, sat_weight=1.35)
+    X_master, _, p5, ap4, p3, sat7 = build_v7_master_matrix(None, w_f2=1.50, w_f3=0.50, w_top=0.60)
     run_benchmark_satlas(sample_ids, sat7)
+
+    # Also clean stale montage pages if fewer pages are produced
+    for old_pg in C7_DIR.glob("montage_v7_micro_p*.jpg"):
+        old_pg.unlink()
 
     print(f"\nBuilding v7 Louvain graph on X_master shape={X_master.shape}...", flush=True)
     lab, cents, res, mod = run_louvain_v7(X_master, k_nn=18)
