@@ -1,0 +1,11 @@
+{
+  "cv_folds": 5,
+  "lr_macro_f1": 0.9450332728372656,
+  "knn_macro_f1": 1.0,
+  "ensemble_weights": {
+    "lr": 0.65,
+    "knn": 0.35
+  },
+  "n_train_samples": 192,
+  "n_features": 6253
+}

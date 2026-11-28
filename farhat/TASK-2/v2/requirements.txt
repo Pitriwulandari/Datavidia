@@ -1,0 +1,25 @@
+# Datavidia 11.0 - Task 2 - v2 (embedding cache + clustering graf + ensemble)
+# Python 3.11.x
+# install: pip install -r requirements.txt
+
+numpy==2.4.6
+pandas==3.1.1
+scipy==1.17.1
+scikit-learn==1.9.1
+joblib==1.6.0
+
+# image ops
+Pillow==13.0.0
+opencv-python-headless==5.1.0.95
+
+# clustering graf (Leiden/Louvain)
+igraph==1.0.0
+leidenalg==0.12.0
+
+# visualisasi
+matplotlib==3.11.2
+
+# notebook inference-only
+ipykernel==7.4.0
+nbformat>=5.10
+nbconvert>=7.16
