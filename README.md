@@ -145,8 +145,9 @@ jupyter notebook ghani/notebooks/
 | `v2` | Farhat | DINOv2-S + DINOv3-S + MAE-B + MobileNetV3 + Louvain (`res=2.6`) | `0.13315` | Hanya 2 klaster termapping (`Fire`/`Hurricane`) + bug indeks `argmax` → 4 kelas kosong |
 | `v3` | Farhat | Patch-Chamfer DINOv2-S/14 (`topchg_delta`) + Hurricane anchor + MLP/LR/kNN | `0.14198` | Clustering hanya pada `topchg_delta` & mapping klaster mewarisi KMeans(7) `v1` |
 | `v1` | Pitri | `submission_final-1.csv` *(kode Task-2 belum di-push)* | `0.13798` | Percobaan pertama Pitri di Task-2 |
-| **`v3`** | **Ghani** | **Cloud-Adaptive Multi-Backbone Event-Graph + 5-Fold 3-Family Ensemble** | **`0.37895`** | **Skor terbaik tim saat ini — De-augmentasi + Louvain + MLP/LR/kNN** |
+| `v3` | Ghani | Cloud-Adaptive Multi-Backbone Event-Graph + 5-Fold 3-Family Ensemble | `0.37895` | De-augmentasi + Louvain + MLP/LR/kNN |
 | `v4` | Ghani | 4-DOF Rigid Spatial Alignment + Aligned Gray-CLAHE DiD + 4-Family Ensemble | `0.37878` | Stagnan vs `v3`; audit sampel acak mengungkap *Gray-CLAHE* membuang sinyal warna bencana |
+| **`v8`** | **Ghani** | **De-Striped + Cloud-Masked 4-Backbone (`SatlasPretrain` + `DINOv2-B/S` + `ConvNeXt-B`) + Audit 184px + 6-Class Pure-Core SSL 5-Family** | **`0.49893`** | **Skor terbaik tim (+0.11998 dari `v3`) — bebas bocor scanline 33%, Palu → Tsunami, US Suburb → Hurricane** |
 
 ---
 
