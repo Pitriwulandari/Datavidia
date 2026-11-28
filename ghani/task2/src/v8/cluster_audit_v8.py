@@ -72,67 +72,74 @@ def regime_center_l2(
         return out, state
 
 
-def get_modality_regimes(audit: np.ndarray, audit_names: list[str]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Observable pixel-level modality regimes (100% zero-retraining inference compliant!):
-      reg_pre: 0=Optical RGB, 1=Monochrome/Gray (c_pre > 0.992)
-      reg_pst: 0=Optical RGB, 1=Both-Gray, 2=Optical->SAR/Mono-Post (c_pre<=0.992 & c_pst>0.985)
-      reg_pair: 0=Optical->Optical, 1=Both-Gray, 2=Optical->SAR/Mono-Post
+def get_modality_regimes(audit: np.ndarray, audit_names: list[str], p3_audit_flags: np.ndarray):
+    """Observable pixel-level nuisance flags (100% zero-retraining inference compliant!):
+      g_pre, g_pst, both_gray: exact paired/single grayscale flags (from raw RGB)
+      st_pre, st_pst: exact axis-aligned synthetic scanline flags (hv > 0.14)
+      sar_post: diagnostic-only Optical->Mono-Post flag (NOT subtracted so Wildfire ash stays intact!)
     """
     am = {k: i for i, k in enumerate(audit_names)}
     c1 = audit[:, am["c_pre"]]
     c2 = audit[:, am["c_pst"]]
-    mono_pre = c1 > 0.992
-    both_gray = mono_pre & (c2 > 0.992)
-    sar_post = (~mono_pre) & (c2 > 0.985)
-
-    reg_pre = mono_pre.astype(np.int32)
-    reg_pst = np.zeros(len(c1), dtype=np.int32)
-    reg_pst[both_gray] = 1
-    reg_pst[sar_post] = 2
-    reg_pair = reg_pst.copy()
-    return reg_pre, reg_pst, reg_pair
+    g_pre = (p3_audit_flags[:, 2] > 0.5).astype(np.int32)
+    g_pst = (p3_audit_flags[:, 3] > 0.5).astype(np.int32)
+    both_gray = ((g_pre > 0) & (g_pst > 0)).astype(np.int32)
+    any_gray = ((g_pre > 0) | (g_pst > 0)).astype(np.int32)
+    st_pre = (audit[:, am["hv_pre_raw"]] > 0.14).astype(np.int32)
+    st_pst = (audit[:, am["hv_pst_raw"]] > 0.14).astype(np.int32)
+    sar_post = ((c1 <= 0.992) & (c2 > 0.985) & (both_gray == 0)).astype(np.int32)
+    return g_pre, g_pst, both_gray, any_gray, st_pre, st_pst, sar_post
 
 
 def build_v8_clean_matrix(center_state: dict | None = None):
-    """Build 100% De-Striped, Cloud-Masked, 3-Regime Modality-Centered Master Matrix."""
+    """Build 100% De-Striped + Gray-Centered + Stripe-Centered 4-Backbone Master Matrix.
+    Preserves true Wildfire charcoal/ash & Volcano ash while erasing grayscale & scanline leaks!
+    """
     sat8 = np.load(C8_DIR / "v8_satlas_swinb.npz")
     din8 = np.load(C8_DIR / "v8_dinov2_vitb.npz")
     ph8 = np.load(C8_DIR / "v8_phys_clean.npz", allow_pickle=True)
+    p3 = np.load(C3_DIR / "phys_v3.npz", allow_pickle=True)
+    vs4 = np.load(C4_DIR / "aligned_vits_336.npz")
+    vb4 = np.load(C4_DIR / "aligned_vitb_224.npz")
+    cx3 = np.load(C3_DIR / "cnxb_gray.npz")
 
     audit = ph8["audit"]
     audit_names = list(ph8["audit_names"])
-    reg_pre, reg_pst, reg_pair = get_modality_regimes(audit, audit_names)
-    is_sar = (reg_pst == 2)
+    g_pre, g_pst, both_gray, any_gray, st_pre, st_pst, sar_post = get_modality_regimes(
+        audit, audit_names, p3["audit_flags"]
+    )
 
-    # Weight SatlasPretrain f2 (aerial building-scale) + DINOv2 ViT-B/14-reg (semantic)
-    # Note: for Optical->SAR pairs, slightly damp post vs pre so clean optical pre anchors its event!
+    w_aux = 0.75
     views = [
-        ("sat_f2_pre",     1.45, sat8["f2_pre"],         reg_pre,  False),
-        ("sat_f2_post",    1.65, sat8["f2_post"],        reg_pst,  True),
-        ("sat_f3_pre",     0.65, sat8["f3_pre"],         reg_pre,  False),
-        ("sat_f3_post",    0.75, sat8["f3_post"],        reg_pst,  True),
-        ("sat_f2_topchg",  0.65, sat8["f2_topchg_post"], reg_pair, True),
-        ("dino_pmean_pre", 1.35, din8["pmean_pre"],      reg_pre,  False),
-        ("dino_pmean_pst", 1.60, din8["pmean_post"],     reg_pst,  True),
-        ("dino_cls_pre",   0.85, din8["cls_pre"],        reg_pre,  False),
-        ("dino_cls_pst",   1.00, din8["cls_post"],       reg_pst,  True),
-        ("dino_topchg",    0.65, din8["topchg_post"],    reg_pair, True),
-        ("dino_diff",      0.55, din8["pmean_post"] - din8["pmean_pre"], reg_pair, True),
+        # Primary: 100% De-Striped, De-Tinted, Cloud-Masked Valid-Overlap SatlasPretrain + DINOv2-B
+        ("sat_f2_pre",     1.55, sat8["f2_pre"],                        g_pre),
+        ("sat_f2_post",    1.80, sat8["f2_post"],                       g_pst),
+        ("sat_f3_pre",     0.65, sat8["f3_pre"],                        g_pre),
+        ("sat_f3_post",    0.75, sat8["f3_post"],                       g_pst),
+        ("sat_f2_topchg",  0.60, sat8["f2_topchg_post"],                any_gray),
+        ("dino_pmean_pre", 1.45, din8["pmean_pre"],                     g_pre),
+        ("dino_pmean_pst", 1.75, din8["pmean_post"],                    g_pst),
+        ("dino_cls_pre",   0.85, din8["cls_pre"],                       g_pre),
+        ("dino_cls_pst",   1.05, din8["cls_post"],                      g_pst),
+        ("dino_topchg",    0.60, din8["topchg_post"],                   any_gray),
+        ("dino_diff",      0.55, din8["pmean_post"] - din8["pmean_pre"], any_gray),
+        # Auxiliary: Grayscale-invariant backbones with Stripe-Conditional Mean-Centering!
+        ("vs4_pre",  w_aux * 0.90, vs4["pmean_pre"],  st_pre),
+        ("vs4_post", w_aux * 1.15, vs4["pmean_post"], st_pst),
+        ("vb4_pre",  w_aux * 0.80, vb4["pmean_pre"],  st_pre),
+        ("vb4_post", w_aux * 1.00, vb4["pmean_post"], st_pst),
+        ("cx3_pre",  w_aux * 0.75, cx3["pre"],        st_pre),
+        ("cx3_post", w_aux * 0.85, cx3["post"],       st_pst),
     ]
 
     new_state = {} if center_state is None else center_state
     blocks = []
-    for key, wt, arr, reg, damp_sar in views:
+    for key, wt, arr, reg in views:
         st = None if center_state is None else center_state[key]
         c_arr, st_out = regime_center_l2(arr, reg, st)
         if center_state is None:
             new_state[key] = st_out
-        if damp_sar and is_sar.any():
-            # For Optical->SAR pairs, gently damp SAR post weight (0.55x) so optical pre leads cleanly!
-            w_row = np.where(is_sar, wt * 0.55, wt).astype(np.float32)[:, None]
-            blocks.append(w_row * c_arr)
-        else:
-            blocks.append(wt * c_arr)
+        blocks.append(wt * c_arr)
 
     pf8 = np.nan_to_num(ph8["features"].astype(np.float32), nan=0.0, posinf=0.0, neginf=0.0)
     if center_state is None:
@@ -140,11 +147,18 @@ def build_v8_clean_matrix(center_state: dict | None = None):
         new_state["sc8"] = sc8
     else:
         sc8 = center_state["sc8"]
-    pf8_n = l2norm(np.clip(sc8.transform(pf8), -4.0, 4.0).astype(np.float32))
-    blocks.append(0.75 * pf8_n)
+    pf8_raw = np.clip(sc8.transform(pf8), -4.0, 4.0).astype(np.float32)
+    st_p = None if center_state is None else center_state["pf8_reg"]
+    pf8_c, st_p_out = regime_center_l2(pf8_raw, both_gray, st_p)
+    if center_state is None:
+        new_state["pf8_reg"] = st_p_out
+    blocks.append(0.55 * pf8_c)
 
     X_master = l2norm(np.hstack(blocks).astype(np.float32))
-    return X_master, new_state, ph8, sat8, din8, reg_pre, reg_pst
+    reg_pst_diag = np.zeros(len(g_pre), dtype=np.int32)
+    reg_pst_diag[both_gray > 0] = 1
+    reg_pst_diag[sar_post > 0] = 2
+    return X_master, new_state, ph8, sat8, din8, g_pre, reg_pst_diag
 
 
 def run_louvain_v8(X: np.ndarray, k_nn: int = 18):
