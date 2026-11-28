@@ -1,28 +1,39 @@
-# Datavidia 11.0 - Task 2 (Farhat) - environment lengkap (v1 + v2)
-# Python 3.11.x
-# install: pip install -r requirements.txt
-
-# --- core numerik / data ---
+# requirements.txt — v5/v3 pipeline (pinned dari venv)
+# Core ML / DL
 numpy==2.4.6
-pandas==3.1.1
-scipy==1.17.1
-scikit-learn==1.9.1
-joblib==1.6.0
-
-# --- v1: encoder pure-vision (torch) ---
-torch==2.15.0
-torchvision==0.29.2
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
 timm==1.0.31
-Pillow==13.0.0
-tqdm==4.70.1
+scikit-learn==1.9.1
+scipy==1.17.1
 
-# --- v2: clustering graf + image ops ---
+# ONNX export / inference
+onnx==1.23.2
+onnxruntime==1.32.0
+skl2onnx==1.20.0
+
+# Data / image
+pandas==3.1.1
+pillow==13.0.0
 opencv-python-headless==5.1.0.95
+
+# Clustering / graph
 igraph==1.0.0
 leidenalg==0.12.0
-matplotlib==3.11.2
 
-# --- notebook (inference-only) ---
+# Notebook / Jupyter (for submission execution)
+jupyter_client==8.10.0
+jupyter_core==5.9.1
 ipykernel==7.4.0
-nbformat>=5.10
-nbconvert>=7.16
+nbformat==6.0.1
+nbconvert==8.1.0
+
+# Utilities
+tqdm==4.70.1
+joblib==1.6.0
+PyYAML==6.0.4
+networkx==3.6.1
+
+# Optional (dev)
+# optuna==5.1.0
+# matplotlib==3.11.2
