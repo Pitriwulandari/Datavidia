@@ -1,0 +1,5 @@
+{
+  "version": "v6_change_focus_cpu",
+  "seed": 42,
+  "features": "Base + spatial/edge features + 6 domain interaction ratios + GMM(8) + 3-family ensemble"
+}

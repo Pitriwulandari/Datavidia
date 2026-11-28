@@ -1,0 +1,5 @@
+{
+  "version": "v5_all_in_one_cpu",
+  "seed": 42,
+  "features": "All physical + spatial/edge features + Robust/Standard scaling + GMM(8) + KMeans(16) + 3-family ensemble"
+}
