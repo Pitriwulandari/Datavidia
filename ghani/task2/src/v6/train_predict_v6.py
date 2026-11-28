@@ -74,7 +74,7 @@ MICRO_TO_CLASS_V6: dict[int, str] = {
     8: "Volcano",     # n=103: sub-split -> K08_s1(61, lapR=-0.31) Volcano ash | K08_s0(42, lapR=+0.13) Fire hillside
     9: "Fire",        # n=101: sub-split -> K09_s1(51) Charcoal Fire | K09_s0(50, lapR=+0.66) Volcano lava/ash
     10: "Hurricane",  # n=96:  flooded dark-water US pastures & ponds
-    11: "Tsunami",    # n=93:  100% striped Sunda Tsunami farmlands (stripe_z=5.0)
+    11: "Fire",       # n=93:  Pinery Bushfire plowed agricultural paddocks (st_pre=4.59 high too, st_del=+0.38!)
     12: "Fire",       # n=88:  scorched brown/gray wildfire forest canopy
     13: "Earthquake", # n=87:  dense urban blocks
     14: "Earthquake", # n=86:  100% Turkey-Syria terracotta apartment towers
@@ -88,18 +88,18 @@ MICRO_TO_CLASS_V6: dict[int, str] = {
     22: "Tsunami",    # n=56:  100% striped Sunda Tsunami villages (stripe_z=4.0)
     23: "Tsunami",    # n=55:  striped Sunda Tsunami hazy/coastal
     24: "Hurricane",  # n=54:  US wooded suburbs
-    25: "Hurricane",  # n=58:  US residential suburban grids
+    25: "Earthquake", # n=58:  dense urban residential grids (sim_EQ=+0.490, sim_US=-0.136)
     26: "Earthquake", # n=53:  sub-split -> K26_s0(23) Palu Tsunami coast | K26_s1(30) Urban Earthquake
     27: "Earthquake", # n=54:  ultra-dense urban metropolis
     28: "Hurricane",  # n=49:  Florida lake & canal suburbs
     29: "Tsunami",    # n=44:  striped Sunda coastal w/ clouds (stripe_z=3.7, cld=11.1%, downweighted in Pass 1)
     30: "Earthquake", # n=42:  Mexico City / dense terracotta neighborhoods
     31: "Hurricane",  # n=41:  US canal & suburban houses
-    32: "Tsunami",    # n=41:  100% striped Sunda Tsunami coast & fields (stripe_z=4.6)
+    32: "Fire",       # n=41:  Pinery Bushfire charred paddocks (st_pre=4.23, st_del=+0.33, charc=+0.082 #3!)
     33: "Hurricane",  # n=41:  US flooded/wind-damaged forest & creeks
     34: "Earthquake", # n=40:  dense urban avenues & commercial
     35: "Earthquake", # n=39:  dense concrete urban grids
-    36: "Explosion",  # n=39:  Beirut off-nadir tall towers & industrial port
+    36: "Earthquake", # n=39:  Turkey/urban high-rises & cloudy urban (sim_Turk=+0.525 > sim_Beir=+0.487)
     37: "Earthquake", # n=38:  100% Turkey-Syria terracotta apartment blocks
     38: "Earthquake", # n=33:  dense residential urban grids
     39: "Earthquake", # n=35:  dense concrete cities
@@ -243,7 +243,7 @@ def run_5fold_4family(X_master, X_mlp, X_lgb, y_target, sample_w, cls_w, save_ar
         oof_mlp[va] = predict_mlp_proba(mlp_m, X_mlp[va])
         full_mlp += predict_mlp_proba(mlp_m, X_mlp) / 5.0
 
-        lr_m = LogisticRegression(C=10.0, max_iter=1000, class_weight=cls_w_dict, random_state=SEED + fold)
+        lr_m = LogisticRegression(C=14.0, max_iter=1000, class_weight=cls_w_dict, random_state=SEED + fold)
         lr_m.fit(X_master[tr], y_target[tr], sample_weight=sample_w[tr])
         oof_lr[va] = lr_m.predict_proba(X_master[va]).astype(np.float32)
         full_lr += lr_m.predict_proba(X_master).astype(np.float32) / 5.0
@@ -483,10 +483,11 @@ def main():
     # Downweight the 2 high-cloud clusters (K29=11.1%, K45=13.5%) & soften K09_volc boundary slightly
     w_p1[np.isin(lab_micro, [29, 45])] *= 0.30
     w_p1[k09_volc_idx] *= 0.75
-    w_p1[beirut_v3] = np.maximum(w_p1[beirut_v3], 0.90)
+    beirut_core = beirut_v3 | (lab_micro == 41)
+    w_p1[beirut_core] = np.maximum(w_p1[beirut_core], 0.90)
 
     counts1 = np.bincount(y_p1, minlength=len(CLASSES))
-    cls_w1 = (N / (len(CLASSES) * counts1)) ** 0.58
+    cls_w1 = (N / (len(CLASSES) * counts1)) ** 0.55
     cls_w1 = cls_w1 / cls_w1.mean()
     print(f"Shapes: X_master={X_master.shape}, X_mlp={X_mlp.shape}, X_lgb={X_lgb.shape}", flush=True)
     print("\n=== PASS 1: BALANCED OOF CORE DISCOVERY ===", flush=True)
@@ -506,27 +507,27 @@ def main():
     cloudy_mc = np.isin(lab_micro, [29, 45])
     # Protect K41 Beirut core; require >=3/4 family agreement AND strong prob to prevent Hurricane black-hole!
     flip_norm = (
-        (~beirut_v3) & (~cloudy_mc)
+        (~beirut_core) & (~cloudy_mc)
         & (oof_cls1 != y_p1)
         & (n_fam_agree >= 3)
         & (oof_conf1 >= 0.65)
         & (p_orig <= 0.25)
     )
-    flip_cld = (~beirut_v3) & cloudy_mc & (oof_cls1 != y_p1) & (n_fam_agree >= 3) & (oof_conf1 >= 0.48)
+    flip_cld = (~beirut_core) & cloudy_mc & (oof_cls1 != y_p1) & (n_fam_agree >= 3) & (oof_conf1 >= 0.48)
     flip_mask = flip_norm | flip_cld
     y_p2[flip_mask] = oof_cls1[flip_mask]
 
     agree_core = (oof_cls1 == y_p2)
     w_p2 = np.where(agree_core, np.maximum(w_p2, 0.70 * oof_conf1 + 0.30), 0.35 * w_p2).astype(np.float32)
     w_p2[flip_mask] = (0.65 * oof_conf1[flip_mask] * w_cld[flip_mask]).astype(np.float32)
-    w_p2[beirut_v3] = np.maximum(w_p2[beirut_v3], 0.90)
+    w_p2[beirut_core] = np.maximum(w_p2[beirut_core], 0.90)
 
     p2_counts = {cls: int((y_p2 == i).sum()) for i, cls in enumerate(CLASSES)}
     print(f"\n=== PASS 2: ANTI-BLACK-HOLE CLEAN-CORE RETRAINING (refined {int(flip_mask.sum())} consensus samples) ===", flush=True)
     print("  Pass-2 target counts:", p2_counts, flush=True)
 
     counts2 = np.bincount(y_p2, minlength=len(CLASSES))
-    cls_w2 = (N / (len(CLASSES) * counts2)) ** 0.58
+    cls_w2 = (N / (len(CLASSES) * counts2)) ** 0.55
     cls_w2 = cls_w2 / cls_w2.mean()
     print("  Pass-2 class weights:", {CLASSES[i]: round(float(cls_w2[i]), 3) for i in range(len(CLASSES))}, flush=True)
 
