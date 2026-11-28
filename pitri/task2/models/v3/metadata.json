@@ -1,0 +1,5 @@
+{
+  "version": "v3_fast_cpu",
+  "seed": 42,
+  "features": "RGB/HSV/ExG/dblue/dark_post/ash_post/Grid4x4/Sobel + GMM(8, reg_covar=1e-2)"
+}
